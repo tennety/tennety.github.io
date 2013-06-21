@@ -1,17 +1,8 @@
-/* TEAM */
-Developer: My name
-Site: http://mysite.com
-Twitter: @myhandle
-Location: Any town, USA
-
-/* THANKS */
-Middleman: http://middlemanapp.com
-Middleman ZURB Template: https://github.com/mattolson/middleman-zurb-template
-ZURB: http://www.zurb.com/
-Font Awesome: http://fortawesome.github.com/Font-Awesome
-FancyBox: http://fancybox.net/
+/* Foundation was made by ZURB, an interaction design and design strategy firm in Campbell, CA */
+/* zurb.com */
+/* humanstxt.org */
 
 /* SITE */
-Standards: HTML5, CSS3
-Components: ZURB Foundation, jQuery, Font Awesome, FancyBox, Compass, respond.js, html5 shiv
-
+  Standards: HTML5, CSS3
+  Components: jQuery, Orbit, Reveal
+  Software: Coda, Textmate, Git

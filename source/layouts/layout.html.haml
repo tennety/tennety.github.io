@@ -21,6 +21,8 @@
 
   %title= data.page.title || "My Blog"
 
+  = stylesheet_link_tag "_normalize"
+  = stylesheet_link_tag "app", media: %w{screen projector print}
   = stylesheet_link_tag "application"
   = yield_content :stylesheets
 
@@ -45,6 +47,10 @@
       %ul.left
         %li
           %a{href: '/blog'} Blog
+        %li
+          %a{href: '/resume'} Resume
+        %li
+          %a{href: '/contact'} Contact
   .row
     .small-12.columns
       =yield
