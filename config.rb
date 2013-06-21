@@ -88,7 +88,7 @@ set :images_dir, 'images'
 # Build-specific configuration
 configure :build do
 
-  activate :minify_css        
+  activate :minify_css
   activate :minify_javascript
 
   # Enable cache buster
