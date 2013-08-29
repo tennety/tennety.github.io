@@ -17,3 +17,4 @@
 .rbenv-version
 .rbenv-gemsets
 
+.ruby-version
