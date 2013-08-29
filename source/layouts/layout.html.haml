@@ -38,30 +38,33 @@
   = yield_content :head
 
 %body
-  %nav.container.top-bar.home-border
-    %ul.title-area
-      %li.name
-        %h1
-          = link_to 'Home', '/'
-    %section.top-bar-section
-      %ul.left
-        %li
-          %a{href: '/blog'} Blog
-        %li
-          %a{href: '/resume'} Resume
-        %li
-          %a{href: '/contact'} Contact
+  %header
+    %a{href: '/'}
+      %h1.subheader Chandu Tennety
+  .sticky
+    %nav.top-bar.home-border
+      %ul.title-area
+        %li.name
+          %h1
+            = link_to 'Tennety', '/'
+        %li.toggle-topbar.menu-icon
+          %a{href: ''}
+            %span
+      %section.top-bar-section
+        %ul.left
+          %li
+            %a{href: '/blog'} Blog
+          %li
+            %a{href: 'https://github.com/tennety', target: '_blank'}
+              %i.icon-github
+          %li
+            %a{href: 'https://twitter.com/tennety', target: '_blank'}
+              %i.icon-twitter
   .row
     .small-12.columns
       =yield
 
   %footer.row
-    .small-6.columns
-      %p
-        &copy; Copyright
-        = Date.today.year.to_s
-        MySite
-    .small-6.columns
 
     <!--[if lt IE 8]>
     <div id="ie-warning-overlay">
