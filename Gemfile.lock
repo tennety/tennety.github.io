@@ -1,18 +1,16 @@
 GIT
-  remote: git://github.com/tarebyte/middleman-gh-pages.git
-  revision: 9cebd6e17ea4888c3bcea90a47d5b1aaba1b5797
-  branch: github_user_pages
-  specs:
-    middleman-gh-pages (0.0.3)
-      rake (> 0.9.3)
-
-GIT
   remote: git://github.com/zurb/foundation.git
   revision: 39690643a016efceaed29ff228e7363a01288938
   branch: master
   specs:
     zurb-foundation (4.2.1)
       sass (>= 3.2.0)
+
+PATH
+  remote: /Users/tennety/projects/personal/middleman-gh-pages
+  specs:
+    middleman-gh-pages (0.0.3)
+      rake (> 0.9.3)
 
 GEM
   remote: http://rubygems.org/
