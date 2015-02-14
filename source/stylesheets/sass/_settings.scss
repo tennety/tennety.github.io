@@ -136,7 +136,8 @@ $default-float: left;
 
 // Heading font styles
 
-// $header-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+@import url(http://fonts.googleapis.com/css?family=Londrina+Solid|Londrina+Sketch|Londrina+Outline|Londrina+Shadow);
+$header-font-family: "Londrina Shadow", "Helvetica Narrow", "Arial Narrow", sans-serif;
 // $header-font-weight: bold;
 // $header-font-style: normal;
 // $header-font-color: #222;
@@ -147,11 +148,11 @@ $default-float: left;
 
 // Heading font sizes
 
-// $h1-font-size: emCalc(44px);
-// $h2-font-size: emCalc(37px);
-// $h3-font-size: emCalc(27px);
-// $h4-font-size: emCalc(23px);
-// $h5-font-size: emCalc(18px);
+// $h1-font-size: emCalc(50px);
+// $h2-font-size: emCalc(42px);
+// $h3-font-size: emCalc(32px);
+// $h4-font-size: emCalc(28px);
+// $h5-font-size: emCalc(22px);
 // $h6-font-size: 1em;
 
 // Subheaders
@@ -169,7 +170,8 @@ $default-float: left;
 
 // Paragraphs
 
-// $paragraph-font-family: inherit;
+@import url(http://fonts.googleapis.com/css?family=Carrois+Gothic|Metrophobic);
+$paragraph-font-family: "Metrophobic", Helvetica, Arial, sans-serif;
 // $paragraph-font-weight: normal;
 // $paragraph-font-size: 1em;
 // $paragraph-line-height: 1.6;
