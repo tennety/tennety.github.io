@@ -17,8 +17,6 @@
   <meta content='on' http-equiv='cleartype'>
   <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
   <title>Minimum Viable Blog</title>
-  <link href="/stylesheets/_normalize.css" media="screen" rel="stylesheet" type="text/css" />
-  <link href="/stylesheets/app.css" media="[&quot;screen&quot;, &quot;projector&quot;, &quot;print&quot;]" rel="stylesheet" type="text/css" />
   <link href="/stylesheets/application.css" media="screen" rel="stylesheet" type="text/css" />
   
   <!-- IE backporting -->
@@ -28,17 +26,12 @@
   
 </head>
 <body>
-  <header>
-    <a href='/'>
-      <h1 class='subheader'>Chandu Tennety</h1>
-    </a>
-  </header>
   <div class='sticky'>
     <nav class='top-bar home-border'>
       <ul class='title-area'>
         <li class='name'>
           <h1>
-            <a href="/">Tennety</a>
+            <a href="/">Chandu Tennety</a>
           </h1>
         </li>
         <li class='toggle-topbar menu-icon'>
@@ -51,6 +44,9 @@
         <ul class='left'>
           <li>
             <a href='/blog'>Blog</a>
+          </li>
+          <li>
+            <a href='/resume.html'>Resume</a>
           </li>
           <li>
             <a href='https://github.com/tennety' target='_blank'>
@@ -77,11 +73,48 @@
         <div class='row'>
           <article class='small-9 columns'>
             <h3>
+              <a href="/blog/2014/11/17/cljs-om-walkthrough.html">Adding a Component to a ClojureScript/Om Application &mdash; a Walkthrough</a>
+            </h3>
+            <p><a href="http://birdwave.neo.com">Birdwave</a> is a heavily data-driven app, which makes its UI an excellent candidate to structure into Om components. In this article, we'll add a new component to the app, and try to understand some of its inner workings in the process.</p>
+            <a class="secondary button radius" href="/blog/2014/11/17/cljs-om-walkthrough.html">Read more &rarr;</a>
+          </article>
+          <aside class='small-3 columns'>
+            <ul class='credit'>
+              <li><a class="tiny button secondary round" href="/blog/tags/tech.html">tech</a></li>
+              <li><a class="tiny button secondary round" href="/blog/tags/clojurescript.html">ClojureScript</a></li>
+              <li><a class="tiny button secondary round" href="/blog/tags/om.html">Om</a></li>
+              <li><a class="tiny button secondary round" href="/blog/tags/component.html">component</a></li>
+              <li><a class="tiny button secondary round" href="/blog/tags/tutorial.html">tutorial</a></li>
+            </ul>
+          </aside>
+        </div>
+        <hr>
+        <div class='row'>
+          <article class='small-9 columns'>
+            <h3>
+              <a href="/blog/2014/10/03/responsive-js.html">Responsive JavaScript With EnquireJS</a>
+            </h3>
+            <p>For a dynamic client-side application, using CSS alone to show and hide components for different screen sizes isn't enough. Even when hidden, components may be listening for application state and re-rendering themselves or taking up resources for no visible effect, giving the perception of a laggy app. They may be making unnecessary AJAX requests to the server.</p>
+            <a class="secondary button radius" href="/blog/2014/10/03/responsive-js.html">Read more &rarr;</a>
+          </article>
+          <aside class='small-3 columns'>
+            <ul class='credit'>
+              <li><a class="tiny button secondary round" href="/blog/tags/tech.html">tech</a></li>
+              <li><a class="tiny button secondary round" href="/blog/tags/javascript.html">JavaScript</a></li>
+              <li><a class="tiny button secondary round" href="/blog/tags/clojurescript.html">ClojureScript</a></li>
+              <li><a class="tiny button secondary round" href="/blog/tags/responsive.html">responsive</a></li>
+            </ul>
+          </aside>
+        </div>
+        <hr>
+        <div class='row'>
+          <article class='small-9 columns'>
+            <h3>
               <a href="/blog/2013/09/04/unexamined-privilege.html">Unexamined Privilege</a>
             </h3>
-            <h5 id='what_do_you_take_for_granted'>What do you take for granted?</h5>
+            <h5 id="what-do-you-take-for-granted">What do you take for granted?</h5>
             
-            <p>When I walk down the street, guys don&#8217;t ask me to smile. Random strangers don&#8217;t fling compliments my way like alms for beggars. I don&#8217;t have to go out of my way to look like I don&#8217;t want to be bothered. I&#8217;m physically and mentally healthy, able, doing work that I love. I&#8217;m also a cis-gendered, straight male. These are things I take for granted. And for a lot of people like me, that doesn&#8217;t feel like privilege.</p>
+            <p>When I walk down the street, guys don't ask me to smile. Random strangers don't fling compliments my way like alms for beggars. I don't have to go out of my way to look like I don't want to be bothered. I'm physically and mentally healthy, able, doing work that I love. I'm also a cis-gendered, straight male. These are things I take for granted. And for a lot of people like me, that doesn't feel like privilege.</p>
             <a class="secondary button radius" href="/blog/2013/09/04/unexamined-privilege.html">Read more &rarr;</a>
           </article>
           <aside class='small-3 columns'>
@@ -98,9 +131,9 @@
             <h3>
               <a href="/blog/2013/08/29/first-post.html">Minimum Viable Blog</a>
             </h3>
-            <h4 id='hello_world'>Hello World.</h4>
+            <h4 id="hello-world">Hello World.</h4>
             
-            <p>I have decided to start writing again. Life over the past year or two has taken some wild turns, and I&#8217;m starting to feel like some of my wild musings need a home again. In the spirit of Lean, here&#8217;s the first iteration of my latest attempt at blogging.</p>
+            <p>I have decided to start writing again. Life over the past year or two has taken some wild turns, and I'm starting to feel like some of my wild musings need a home again. In the spirit of Lean, here's the first iteration of my latest attempt at blogging.</p>
           </article>
           <aside class='small-3 columns'>
             <ul class='credit'>
@@ -169,7 +202,12 @@
     imgSizer.collate();
     
     });
-    var _gaq=[['_setAccount','UA-'],['_trackPageview']];
-    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'));
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-46441071-1', 'tennety.github.io');
+    ga('send', 'pageview');
   </script>
 </body>
+

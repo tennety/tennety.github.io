@@ -17,8 +17,6 @@
   <meta content='on' http-equiv='cleartype'>
   <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
   <title>My Blog</title>
-  <link href="/stylesheets/_normalize.css" media="screen" rel="stylesheet" type="text/css" />
-  <link href="/stylesheets/app.css" media="[&quot;screen&quot;, &quot;projector&quot;, &quot;print&quot;]" rel="stylesheet" type="text/css" />
   <link href="/stylesheets/application.css" media="screen" rel="stylesheet" type="text/css" />
   
   <!-- IE backporting -->
@@ -28,17 +26,12 @@
   
 </head>
 <body>
-  <header>
-    <a href='/'>
-      <h1 class='subheader'>Chandu Tennety</h1>
-    </a>
-  </header>
   <div class='sticky'>
     <nav class='top-bar home-border'>
       <ul class='title-area'>
         <li class='name'>
           <h1>
-            <a href="/">Tennety</a>
+            <a href="/">Chandu Tennety</a>
           </h1>
         </li>
         <li class='toggle-topbar menu-icon'>
@@ -51,6 +44,9 @@
         <ul class='left'>
           <li>
             <a href='/blog'>Blog</a>
+          </li>
+          <li>
+            <a href='/resume.html'>Resume</a>
           </li>
           <li>
             <a href='https://github.com/tennety' target='_blank'>
@@ -72,12 +68,21 @@
     </nav>
   </div>
   <div class='row'>
-    <div class='small-12 columns'>
-      <div class='container'>
-        <div class='row'>
-          <div class='small-5 large-3 columns small-centered large-centered'>
+    <div class='large-12 columns'>
+      <div class='hide-for-small'>
+        <div id='featured'>
+          <div class='large-3 columns large-centered'>
             <img src="/images/sp-small.png" />
           </div>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='small-12 large-6 columns large-centered'>
+          <br>
+            <h1>Hi, I'm Chandu Tennety.</h1>
+            <p>I have several secret identities: husband, father, Ruby developer. But at heart I'm an ideator and imaginator (Yeah, I know those aren't real words, but I still like them).</p>
+            <p>In my superhero guise, you will find me capturing elusive ideas and giving them form.</p>
+          </br>
         </div>
       </div>
     </div>
@@ -141,7 +146,12 @@
     imgSizer.collate();
     
     });
-    var _gaq=[['_setAccount','UA-'],['_trackPageview']];
-    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'));
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-46441071-1', 'tennety.github.io');
+    ga('send', 'pageview');
   </script>
 </body>
+

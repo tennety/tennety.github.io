@@ -5,10 +5,242 @@
   <id>http://blog.url.com/</id>
   <link href="http://blog.url.com/"/>
   <link href="http://blog.url.com/feed.xml" rel="self"/>
-  <updated>2013-09-04T07:00:00Z</updated>
+  <updated>2014-11-17T08:00:00Z</updated>
   <author>
     <name>Blog Author</name>
   </author>
+  <entry>
+    <title>Adding a Component to a ClojureScript/Om Application &amp;mdash; a Walkthrough</title>
+    <link rel="alternate" href="/blog/2014/11/17/cljs-om-walkthrough.html"/>
+    <id>/blog/2014/11/17/cljs-om-walkthrough.html</id>
+    <published>2014-11-17T08:00:00Z</published>
+    <updated>2014-11-17T08:00:00Z</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <summary type="html">&lt;p&gt;&lt;a href="http://birdwave.neo.com"&gt;Birdwave&lt;/a&gt; is a heavily data-driven app, which makes its UI an excellent candidate to structure into Om components. In this article, we'll add a new component to the app, and try to understand some of its inner workings in the process.&lt;/p&gt;
+</summary>
+    <content type="html">&lt;p&gt;&lt;a href="http://birdwave.neo.com"&gt;Birdwave&lt;/a&gt; is a heavily data-driven app, which makes its UI an excellent candidate to structure into Om components. In this article, we'll add a new component to the app, and try to understand some of its inner workings in the process.&lt;/p&gt;
+
+&lt;h2 id="intent-of-the-component"&gt;Intent of the Component&lt;/h2&gt;
+
+&lt;p&gt;Birdwave displays month-to-month changes in the sightings of a selected species
+of bird. Currently, the user can change the selected month in two ways,
+depending on their device size (as noted in &lt;a href="http://www.neo.com/2014/10/03/responsive-javascript-with-enquirejs"&gt;this post&lt;/a&gt;).
+On larger screens there's a month slider, and on smaller screens there's a
+select box with the list of available months. It would be nice to have '+' and
+'-' buttons on either side of the select box for the user to go to the previous
+or next month without having to open the select box each time. This is exactly
+what we'll add in this article.&lt;/p&gt;
+
+&lt;p&gt;[Before screenshot]
+[After screenshot]&lt;/p&gt;
+
+&lt;h2 id="setup"&gt;Setup&lt;/h2&gt;
+
+&lt;p&gt;The date selector component currently looks like this:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;div class="lineno"&gt;7&lt;/div&gt;&lt;div class="lineno"&gt;8&lt;/div&gt;&lt;div class="lineno"&gt;9&lt;/div&gt;&lt;div class="lineno"&gt;10&lt;/div&gt;&lt;div class="lineno"&gt;11&lt;/div&gt;&lt;div class="lineno"&gt;12&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;date-select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;reify&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="n"&gt;om/IRender&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;render&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;dom/div&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;slider&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;dom/div&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;date-select&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+          &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;apply&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dom/select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt;
+                 &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:value&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;:time-period&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+                  &lt;/span&gt;&lt;span class="no"&gt;:onChange&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;put!&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;om/get-state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:time-period-ch&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;..&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;%&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;-target&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;-value&lt;/span&gt;&lt;span class="p"&gt;))}&lt;/span&gt;&lt;span class="w"&gt;
+                 &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;map&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;dom/option&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:value&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;month-name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;%&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dates&lt;/span&gt;&lt;span class="p"&gt;)))))))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;If you look at line 7 through 10, the component is responsible for generating a
+select element whose value is the currently selected time period. When a change
+event happens, the handler puts the new value on a &lt;em&gt;core.async&lt;/em&gt; channel,
+&lt;em&gt;time-period-ch&lt;/em&gt;, which is responsible for relaying the changes to the app
+state, called &lt;em&gt;model&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;The available dates are stored as strings in the format
+&amp;quot;YYYY/MM&amp;quot; in a vector named &lt;em&gt;dates&lt;/em&gt;:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dates&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;2012/12&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;2013/01&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;2013/02&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;2013/03&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;2013/04&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;2013/05&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;
+                &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;2013/06&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;2013/07&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;2013/08&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;2013/09&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;2013/10&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;2013/11&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;When a user taps on the '+', our objective is to take the current date, find
+the next date in the &lt;em&gt;dates&lt;/em&gt; vector and push it onto the channel. Similarly,
+for the '-' button, we find the previous date and push it onto the channel.&lt;/p&gt;
+
+&lt;h2 id="implementation"&gt;Implementation&lt;/h2&gt;
+
+&lt;p&gt;We can add our &lt;em&gt;date-plus&lt;/em&gt; component as a sibling to the select element, like
+so (only showing lines 7 and after from the above snippet):&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;div class="lineno"&gt;7&lt;/div&gt;&lt;div class="lineno"&gt;8&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="n"&gt;...&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;apply&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dom/select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt;
+       &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:value&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;:time-period&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="no"&gt;:onChange&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;put!&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;om/get-state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:time-period-ch&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;..&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;%&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;-target&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;-value&lt;/span&gt;&lt;span class="p"&gt;))}&lt;/span&gt;&lt;span class="w"&gt;
+       &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;map&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;dom/option&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:value&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;month-name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;%&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dates&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;om/build&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;date-plus&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;:time-period&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:time-period-ch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;om/get-state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:time-period-ch&lt;/span&gt;&lt;span class="p"&gt;)}})&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;span class="n"&gt;...&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;We know that &lt;em&gt;date-plus&lt;/em&gt; needs access to the &lt;em&gt;time-period-ch&lt;/em&gt;, but since it
+is part of the app's internal state, it needs to be passed in as local state to
+the component. Now we can build the component itself:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;div class="lineno"&gt;7&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;date-plus&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;reify&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="n"&gt;om/IRender&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;render&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;dom/span&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:className&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;plus&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;
+                     &lt;/span&gt;&lt;span class="no"&gt;:onClick&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;update-month!&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;)}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;+&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;&lt;p&gt;As you can see, it's a simple span with the + text in it, and a click handler
+which calls off to an &lt;em&gt;update-month!&lt;/em&gt; function. This is what that function
+looks like:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;update-month!&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;let&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;current-position&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;.indexOf&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dates&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="n"&gt;next-month&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;get&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dates&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;inc&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;js/parseInt&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;current-position&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="n"&gt;time-period-ch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;om/get-state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:time-period-ch&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;when-not&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;nil?&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;next-month&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;put!&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;time-period-ch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;next-month&lt;/span&gt;&lt;span class="p"&gt;))))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;&lt;p&gt;The function does 3 things:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;finds the next month in the dates array by incrementing the index of the
+current month (which is the model that was passed in)&lt;/li&gt;
+  &lt;li&gt;retrieves the &lt;em&gt;time-period-ch&lt;/em&gt; channel from the state set on the component&lt;/li&gt;
+  &lt;li&gt;puts the next month on the channel&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It checks for nil in case the current month is the last in the array, in which
+case there's nothing to do.&lt;/p&gt;
+
+&lt;h2 id="adding-the---button"&gt;Adding the '-' button&lt;/h2&gt;
+
+&lt;p&gt;The '-' button works the exact same way, the only difference being that it
+needs to &lt;em&gt;decrement&lt;/em&gt; the index of the current month. We can make this happen
+with a simple change to our &lt;em&gt;update-month!&lt;/em&gt; function, by letting it take a
+function as a parameter in addition to &lt;em&gt;model&lt;/em&gt; and &lt;em&gt;owner&lt;/em&gt;:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;update-month!&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;let&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;current-position&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;.indexOf&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dates&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="n"&gt;next-month&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;get&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dates&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;func&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;js/parseInt&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;current-position&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="n"&gt;time-period-ch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;om/get-state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:time-period-ch&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;when-not&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;nil?&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;next-month&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;put!&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;time-period-ch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;next-month&lt;/span&gt;&lt;span class="p"&gt;))))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;The function is called on the current month's index to return the next month's
+index. In case of &lt;em&gt;date-plus&lt;/em&gt;, we pass in the &lt;em&gt;inc&lt;/em&gt; function, and for
+&lt;em&gt;date-minus&lt;/em&gt;, we pass in &lt;em&gt;dec&lt;/em&gt;. This is what they look like now:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;div class="lineno"&gt;7&lt;/div&gt;&lt;div class="lineno"&gt;8&lt;/div&gt;&lt;div class="lineno"&gt;9&lt;/div&gt;&lt;div class="lineno"&gt;10&lt;/div&gt;&lt;div class="lineno"&gt;11&lt;/div&gt;&lt;div class="lineno"&gt;12&lt;/div&gt;&lt;div class="lineno"&gt;13&lt;/div&gt;&lt;div class="lineno"&gt;14&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;date-plus&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;reify&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="n"&gt;om/IRender&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;render&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;dom/span&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;date-plus&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;
+                     &lt;/span&gt;&lt;span class="no"&gt;:onClick&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;update-month!&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;inc&lt;/span&gt;&lt;span class="p"&gt;)}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;+&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))))&lt;/span&gt;&lt;span class="w"&gt;
+
+&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;date-minus&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;reify&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="n"&gt;om/IRender&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;render&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;dom/span&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;date-minus&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;
+                     &lt;/span&gt;&lt;span class="no"&gt;:onClick&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;update-month!&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;dec&lt;/span&gt;&lt;span class="p"&gt;)}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;-&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;And here's the final date selector:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;div class="lineno"&gt;7&lt;/div&gt;&lt;div class="lineno"&gt;8&lt;/div&gt;&lt;div class="lineno"&gt;9&lt;/div&gt;&lt;div class="lineno"&gt;10&lt;/div&gt;&lt;div class="lineno"&gt;11&lt;/div&gt;&lt;div class="lineno"&gt;12&lt;/div&gt;&lt;div class="lineno"&gt;13&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;date-select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;reify&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="n"&gt;om/IRender&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;render&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;dom/div&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;slider&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;dom/div&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;date-select&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+          &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;om/build&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;date-minus&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;:time-period&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:time-period-ch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;om/get-state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:time-period-ch&lt;/span&gt;&lt;span class="p"&gt;)}})&lt;/span&gt;&lt;span class="w"&gt;
+          &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;apply&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dom/select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt;
+                 &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:value&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;:time-period&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+                  &lt;/span&gt;&lt;span class="no"&gt;:onChange&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;put!&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;om/get-state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:time-period-ch&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;..&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;%&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;-target&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;-value&lt;/span&gt;&lt;span class="p"&gt;))}&lt;/span&gt;&lt;span class="w"&gt;
+                 &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;map&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;dom/option&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:value&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;month-name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;%&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dates&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt;
+          &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;om/build&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;date-plus&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;:time-period&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:time-period-ch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;om/get-state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:time-period-ch&lt;/span&gt;&lt;span class="p"&gt;)}}))))))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;h3 id="conclusion"&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;And that's it! Om's convention of isolating state makes it easy to build new
+interactive components with very little code (about 20 additional lines for
+both the + and - buttons).&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Responsive JavaScript With EnquireJS</title>
+    <link rel="alternate" href="/blog/2014/10/03/responsive-js.html"/>
+    <id>/blog/2014/10/03/responsive-js.html</id>
+    <published>2014-10-03T07:00:00Z</published>
+    <updated>2014-10-03T07:00:00Z</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <summary type="html">&lt;p&gt;For a dynamic client-side application, using CSS alone to show and hide components for different screen sizes isn't enough. Even when hidden, components may be listening for application state and re-rendering themselves or taking up resources for no visible effect, giving the perception of a laggy app. They may be making unnecessary AJAX requests to the server.&lt;/p&gt;
+</summary>
+    <content type="html">&lt;p&gt;For a dynamic client-side application, using CSS alone to show and hide components for different screen sizes isn't enough. Even when hidden, components may be listening for application state and re-rendering themselves or taking up resources for no visible effect, giving the perception of a laggy app. They may be making unnecessary AJAX requests to the server.&lt;/p&gt;
+
+&lt;h3 id="screen-size-as-application-state"&gt;Screen size as application state&lt;/h3&gt;
+
+&lt;p&gt;The client environment needs to be aware of the available screen size at a more
+fundamental level. In other words, screen size should be part of the
+application state. This way, the client can make decisions on whether or not to
+render certain components for a given screen size.&lt;/p&gt;
+
+&lt;h2 id="enquirejs"&gt;EnquireJS&lt;/h2&gt;
+
+&lt;p&gt;It would be great to have a way to make media queries from the client code, and
+be notified when the screen size changes.
+&lt;a href="http://wicky.nillia.ms/enquire.js/"&gt;EnquireJS&lt;/a&gt; is a lightweight library that
+makes it easy to do this, using the
+&lt;a href="https://developer.mozilla.org/en-US/docs/Web/API/Window.matchMedia"&gt;&lt;code&gt;window.matchMedia&lt;/code&gt;&lt;/a&gt;
+API and a simple registry/callback pattern that fires for different stages of
+matching a media query. We can use enquirejs callbacks to set the value of a
+&lt;code&gt;screen-size&lt;/code&gt; variable, which our app can use when deciding whether or not to render a
+component. In the following ClojureScript example, &lt;code&gt;model&lt;/code&gt; is an atom that is responsible for the
+application state:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;div class="lineno"&gt;7&lt;/div&gt;&lt;div class="lineno"&gt;8&lt;/div&gt;&lt;div class="lineno"&gt;9&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;update-size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;new-size&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;fn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;swap!&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;assoc&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:screen-size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;new-size&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;watch-screen-size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;js/enquire&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;.register&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;screen and (min-width: 0px) and (max-width: 520px)&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;update-size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;xs&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;.register&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;screen and (min-width: 521px) and (max-width: 768px)&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;update-size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;sm&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;.register&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;screen and (min-width: 769px) and (max-width: 1024px)&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;update-size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;md&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;.register&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;screen and (min-width: 1025px)&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;                        &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;update-size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;lg&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;Now, by running &lt;code&gt;watch-screen-size&lt;/code&gt; at startup, we can check the value of the
+&lt;code&gt;screen-size&lt;/code&gt; variable before rendering a component, making an AJAX call, or
+even deciding which URL to call. The server API can be made smart about having
+different endpoints with appropriate payloads based on the screen size.&lt;/p&gt;
+
+&lt;h3 id="heres-an-example"&gt;Here's an example&lt;/h3&gt;
+
+&lt;p&gt;The above code snippet was taken from an app that needs to display an SVG
+county map of the United States using D3 (look
+&lt;a href="http://neo.com/2014/04/21/choropleths-and-d3js"&gt;here&lt;/a&gt; for more on that). The
+county map contains over 3000 SVG elements, so it rendered and updated
+painfully slowly on devices such as tablets or phones. We used CSS to scale the
+SVG to fit the screen better, but we had to find a quicker, more efficient way
+to display the map details.&lt;/p&gt;
+
+&lt;p&gt;Having a handle on the &lt;code&gt;screen-size&lt;/code&gt; variable allowed us to do that. Instead of
+rendering the county map, we now render a state map for smaller screens. This
+brought the number of data points down by orders of magnitude, making the
+render much more snappy.&lt;/p&gt;
+
+&lt;p&gt;The data to be displayed on the map also changes based on a selected month. On
+larger screens, this month selector appears as a slider, but on smaller screens
+we render a simple select list instead. We could render them both all the time
+and selectively shown one over the other, but knowing the screen size allows us
+to not have to do that.&lt;/p&gt;
+
+&lt;h2 id="conclusion"&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Media queries with CSS can only take you so far. For a static site that doesn't
+make a lot of AJAX calls, this may be all you need. But with a rich client-side
+application, knowing the size of your user's screen is as valuable as any other
+user input that your app can react to.&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>Unexamined Privilege</title>
     <link rel="alternate" href="/blog/2013/09/04/unexamined-privilege.html"/>
@@ -18,48 +250,44 @@
     <author>
       <name>Article Author</name>
     </author>
-    <summary type="html">&lt;h5 id='what_do_you_take_for_granted'&gt;What do you take for granted?&lt;/h5&gt;
+    <summary type="html">&lt;h5 id="what-do-you-take-for-granted"&gt;What do you take for granted?&lt;/h5&gt;
 
-&lt;p&gt;When I walk down the street, guys don&amp;#8217;t ask me to smile. Random strangers don&amp;#8217;t fling compliments my way like alms for beggars. I don&amp;#8217;t have to go out of my way to look like I don&amp;#8217;t want to be bothered. I&amp;#8217;m physically and mentally healthy, able, doing work that I love. I&amp;#8217;m also a cis-gendered, straight male. These are things I take for granted. And for a lot of people like me, that doesn&amp;#8217;t feel like privilege.&lt;/p&gt;</summary>
-    <content type="html">&lt;h5 id='what_do_you_take_for_granted'&gt;What do you take for granted?&lt;/h5&gt;
+&lt;p&gt;When I walk down the street, guys don't ask me to smile. Random strangers don't fling compliments my way like alms for beggars. I don't have to go out of my way to look like I don't want to be bothered. I'm physically and mentally healthy, able, doing work that I love. I'm also a cis-gendered, straight male. These are things I take for granted. And for a lot of people like me, that doesn't feel like privilege.&lt;/p&gt;
+</summary>
+    <content type="html">&lt;h5 id="what-do-you-take-for-granted"&gt;What do you take for granted?&lt;/h5&gt;
 
-&lt;p&gt;When I walk down the street, guys don&amp;#8217;t ask me to smile. Random strangers don&amp;#8217;t fling compliments my way like alms for beggars. I don&amp;#8217;t have to go out of my way to look like I don&amp;#8217;t want to be bothered. I&amp;#8217;m physically and mentally healthy, able, doing work that I love. I&amp;#8217;m also a cis-gendered, straight male. These are things I take for granted. And for a lot of people like me, that doesn&amp;#8217;t feel like privilege.&lt;/p&gt;
+&lt;p&gt;When I walk down the street, guys don't ask me to smile. Random strangers don't fling compliments my way like alms for beggars. I don't have to go out of my way to look like I don't want to be bothered. I'm physically and mentally healthy, able, doing work that I love. I'm also a cis-gendered, straight male. These are things I take for granted. And for a lot of people like me, that doesn't feel like privilege.&lt;/p&gt;
 
-&lt;h5 id='examining_your_privilege'&gt;Examining your privilege&lt;/h5&gt;
+&lt;h5 id="examining-your-privilege"&gt;Examining your privilege&lt;/h5&gt;
 
-&lt;p&gt;I don&amp;#8217;t claim to be an expert on racism, sexism, or any of the myriad other forms of oppression in society. I&amp;#8217;m not here to educate, either, since there is much I have to learn myself. What I can do is share what examining privilege looks like for me. In doing so, I hope others can see that it is not only possible, but necessary.&lt;/p&gt;
+&lt;p&gt;I don't claim to be an expert on racism, sexism, or any of the myriad other forms of oppression in society. I'm not here to educate, either, since there is much I have to learn myself. What I can do is share what examining privilege looks like for me. In doing so, I hope others can see that it is not only possible, but necessary.&lt;/p&gt;
 
-&lt;h5 id='recognizing_oppression'&gt;Recognizing oppression&lt;/h5&gt;
+&lt;h5 id="recognizing-oppression"&gt;Recognizing oppression&lt;/h5&gt;
 
-&lt;p&gt;It&amp;#8217;s easy to know when we are not in a position of power. It is much harder, and way more important to realize when we are. For me, an example would be being in a room with mostly men. Or when I am among the majority who speak English, and a few non-native English speakers are present. Or I&amp;#8217;m at a venue that isn&amp;#8217;t handicap accessible. See a pattern here? It&amp;#8217;s when I&amp;#8217;m most comfortable that I need to look for who I&amp;#8217;m marginalizing.&lt;/p&gt;
+&lt;p&gt;It's easy to know when we are not in a position of power. It is much harder, and way more important to realize when we are. For me, an example would be being in a room with mostly men. Or when I am among the majority who speak English, and a few non-native English speakers are present. Or I'm at a venue that isn't handicap accessible. See a pattern here? It's when I'm most comfortable that I need to look for who I'm marginalizing.&lt;/p&gt;
 
-&lt;h6 id='embrace_vulnerability'&gt;Embrace vulnerability&lt;/h6&gt;
+&lt;h6 id="embrace-vulnerability"&gt;Embrace vulnerability&lt;/h6&gt;
 
-&lt;p&gt;If you&amp;#8217;re like me, you don&amp;#8217;t like thinking about this stuff. Why should I leave my position of comfort to accommodate someone who clearly doesn&amp;#8217;t belong? Why can&amp;#8217;t they work on being like everyone else? Other reactions include defensiveness: I don&amp;#8217;t want to deal with the guilt of something my ancestors did! I&amp;#8217;m not like the others in my dominant peer group, I have marginalized friends! If this echoes some of your thoughts, congratulations. You are on your way to noticing your privilege.&lt;/p&gt;
+&lt;p&gt;If you're like me, you don't like thinking about this stuff. Why should I leave my position of comfort to accommodate someone who clearly doesn't belong? Why can't they work on being like everyone else? Other reactions include defensiveness: I don't want to deal with the guilt of something my ancestors did! I'm not like the others in my dominant peer group, I have marginalized friends! If this echoes some of your thoughts, congratulations. You are on your way to noticing your privilege.&lt;/p&gt;
 
 &lt;p&gt;Now recognize it as such. Embrace being vulnerable, being open to acknowledging that those without that same privilege still need a voice, a chair at the table.&lt;/p&gt;
 
-&lt;h5 id='its_ok_not_to_have_answers'&gt;It&amp;#8217;s ok not to have answers&lt;/h5&gt;
+&lt;h5 id="its-ok-not-to-have-answers"&gt;It's ok not to have answers&lt;/h5&gt;
 
-&lt;p&gt;There are no easy answers here. I can&amp;#8217;t pretend discrimination doesn&amp;#8217;t happen by saying &amp;#8220;I don&amp;#8217;t see color, gender, etc.&amp;#8221;. I can&amp;#8217;t commiserate by saying, &amp;#8220;Oh, that happened to me&amp;#8221;, because no, it didn&amp;#8217;t. Someone with privilege, by definition, cannot experience discrimination. You can&amp;#8217;t ideate your way to someone&amp;#8217;s lived experience.&lt;/p&gt;
+&lt;p&gt;There are no easy answers here. I can't pretend discrimination doesn't happen by saying &amp;quot;I don't see color, gender, etc.&amp;quot;. I can't commiserate by saying, &amp;quot;Oh, that happened to me&amp;quot;, because no, it didn't. Someone with privilege, by definition, cannot experience discrimination. You can't ideate your way to someone's lived experience.&lt;/p&gt;
 
-&lt;p&gt;What then? Empathy, always empathy. Know that there is anger, distrust, fear, and deep sadness in being marginalized. Know that it is constant, an inescapable cross to bear, all the time. You can set aside your caremad, they can&amp;#8217;t.&lt;/p&gt;
+&lt;p&gt;What then? Empathy, always empathy. Know that there is anger, distrust, fear, and deep sadness in being marginalized. Know that it is constant, an inescapable cross to bear, all the time. You can set aside your caremad, they can't.&lt;/p&gt;
 
-&lt;p&gt;Here are some other things you can do:&lt;/p&gt;
+&lt;p&gt;Here are some other things you can do:
+* Invite the marginalized to contribute. Make it safe for them to do so.
+* Call people out on their privilege. Be OK with getting called out on yours.
+* Be willing to learn, without having to be taught.
+* Listen without agenda. Question your responses.&lt;/p&gt;
 
-&lt;ul&gt;
-&lt;li&gt;Invite the marginalized to contribute. Make it safe for them to do so.&lt;/li&gt;
+&lt;h5 id="hold-me-accountable"&gt;Hold me accountable&lt;/h5&gt;
 
-&lt;li&gt;Call people out on their privilege. Be OK with getting called out on yours.&lt;/li&gt;
-
-&lt;li&gt;Be willing to learn, without having to be taught.&lt;/li&gt;
-
-&lt;li&gt;Listen without agenda. Question your responses.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id='hold_me_accountable'&gt;Hold me accountable&lt;/h5&gt;
-
-&lt;p&gt;This post is not only an attempt to help people see their privilege, but also a call to marginalized people to hold me and my peers accountable. Call me out! If there&amp;#8217;s anything in here that&amp;#8217;s offensive, I&amp;#8217;d love to hear about it. This blog is open sourced, so pull requests are welcome. I can be reached privately via DM or email. In the interest of maintaining a safe environment, I will be moderating comments. Looking forward to your feedback.&lt;/p&gt;</content>
+&lt;p&gt;This post is not only an attempt to help people see their privilege, but also a call to marginalized people to hold me and my peers accountable. Call me out! If there's anything in here that's offensive, I'd love to hear about it. This blog is open sourced, so pull requests are welcome. I can be reached privately via DM or email. In the interest of maintaining a safe environment, I will be moderating comments. Looking forward to your feedback.&lt;/p&gt;
+</content>
   </entry>
   <entry>
     <title>Minimum Viable Blog</title>
@@ -70,11 +298,13 @@
     <author>
       <name>Article Author</name>
     </author>
-    <summary type="html">&lt;h4 id='hello_world'&gt;Hello World.&lt;/h4&gt;
+    <summary type="html">&lt;h4 id="hello-world"&gt;Hello World.&lt;/h4&gt;
 
-&lt;p&gt;I have decided to start writing again. Life over the past year or two has taken some wild turns, and I&amp;#8217;m starting to feel like some of my wild musings need a home again. In the spirit of Lean, here&amp;#8217;s the first iteration of my latest attempt at blogging.&lt;/p&gt;</summary>
-    <content type="html">&lt;h4 id='hello_world'&gt;Hello World.&lt;/h4&gt;
+&lt;p&gt;I have decided to start writing again. Life over the past year or two has taken some wild turns, and I'm starting to feel like some of my wild musings need a home again. In the spirit of Lean, here's the first iteration of my latest attempt at blogging.&lt;/p&gt;
+</summary>
+    <content type="html">&lt;h4 id="hello-world"&gt;Hello World.&lt;/h4&gt;
 
-&lt;p&gt;I have decided to start writing again. Life over the past year or two has taken some wild turns, and I&amp;#8217;m starting to feel like some of my wild musings need a home again. In the spirit of Lean, here&amp;#8217;s the first iteration of my latest attempt at blogging.&lt;/p&gt;</content>
+&lt;p&gt;I have decided to start writing again. Life over the past year or two has taken some wild turns, and I'm starting to feel like some of my wild musings need a home again. In the spirit of Lean, here's the first iteration of my latest attempt at blogging.&lt;/p&gt;
+</content>
   </entry>
 </feed>
