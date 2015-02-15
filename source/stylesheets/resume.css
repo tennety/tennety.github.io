@@ -23,7 +23,7 @@ body#resume, #inner h1, #inner h2, #inner h3 { font-family: Georgia; color: #444
 .yui-gf { margin-bottom: 1.5em; padding-bottom: 1em; border-bottom: 1px solid #ccc; }
 
 /* //-- header, body, footer -- */
-#hd { margin: 2.5em 0 3em 0; padding-bottom: 1.5em; border-bottom: 1px solid #ccc }
+#hd { margin: 2.5em 0 1em 0; padding-bottom: 1.5em; border-bottom: 1px solid #ccc }
 #hd h2 { text-transform: uppercase; letter-spacing: 2px; }
 
 /* //-- footer -- */
@@ -39,8 +39,7 @@ p { font-size: 100%; line-height: 18px; padding-right: 3em; }
 a { color: #990003 }
 a:hover { text-decoration: none; }
 strong { font-weight: bold; }
-ul.talent { width: 40% }
-ul.talent li { line-height: 24px; border-bottom: 1px solid #ccc; margin: 0;}
+ul.talent li { line-height: 24px; margin: 0;}
 ul.talent li.last { border: none; }
 p.enlarge { font-size: 130%; padding-right: 3.5em; line-height: 24px; }
 p.enlarge span { color: #000 }
@@ -63,7 +62,7 @@ a#pdf:hover { background: #222; }
 .skills-list li { margin: 3px 0; padding: 3px 0; }
 .job.skills-list li { margin: 0px 20px; padding: 0; list-style-type: circle; }
 .skills-list li span { font-size: 130%; display: block; margin-bottom: -2px; padding: 0 }
-.talent { width: 33%; float: left; }
+.talent { width: 23%; float: left; }
 .talent h2 { margin-bottom: 6px; }
 
 #srt-ttab { margin-bottom: 100px; text-align: center;  }
