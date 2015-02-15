@@ -10,21 +10,25 @@ tags: tech, ClojureScript, Om, component, tutorial
 Birdwave displays month-to-month changes in the sightings of a selected species
 of bird. Currently, the user can change the selected month in two ways,
 depending on their device size (as noted in [this post](http://www.neo.com/2014/10/03/responsive-javascript-with-enquirejs)).
-On larger screens there's a month slider, and on smaller screens there's a
-select box with the list of available months. It would be nice to have '+' and
+On larger screens there's a month slider:
+<img src="/images/before.png">
+
+And on smaller screens there's a select box with the list of available months:
+
+<img src="/images/after.png">
+
+It would be nice to have '+' and
 '-' buttons on either side of the select box for the user to go to the previous
 or next month without having to open the select box each time. This is exactly
 what we'll add in this article.
 
-[Before screenshot]
-[After screenshot]
+<img src="/images/after2.png">
 
 ## Setup
 
 The date selector component currently looks like this:
 
 ~~~ clojure
-
 (defn date-select [model owner]
   (reify
     om/IRender
@@ -61,13 +65,11 @@ We can add our _date-plus_ component as a sibling to the select element, like
 so (only showing lines 7 and after from the above snippet):
 
 ~~~ clojure
-...
 (apply dom/select #js
        {:value (:time-period model)
         :onChange #(put! (om/get-state owner :time-period-ch) (.. % -target -value))}
        (map #(dom/option #js {:value %} (month-name %)) dates)))
 (om/build date-plus (:time-period model) {:state {:time-period-ch (om/get-state owner :time-period-ch)}})
-...
 ~~~ 
 
 We know that _date-plus_ needs access to the _time-period-ch_, but since it
@@ -81,7 +83,8 @@ the component. Now we can build the component itself:
     (render [_]
       (dom/span #js {:className "plus"
                      :onClick #(update-month! model owner)} "+"))))
-~~~ 
+~~~
+
 As you can see, it's a simple span with the + text in it, and a click handler
 which calls off to an _update-month!_ function. This is what that function
 looks like:
