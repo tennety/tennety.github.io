@@ -71,9 +71,9 @@
     <div class='small-12 columns'>
       <div class='row'>
         <article class='small-9 columns'>
-          <h3>
+          <h1>
             Adding a Component to a ClojureScript/Om Application &mdash; a Walkthrough
-          </h3>
+          </h1>
           <p><a href="http://birdwave.neo.com">Birdwave</a> is a heavily data-driven app, which makes its UI an excellent candidate to structure into Om components. In this article, we'll add a new component to the app, and try to understand some of its inner workings in the process.</p>
           
           <h2 id="intent-of-the-component">Intent of the Component</h2>
@@ -81,21 +81,25 @@
           <p>Birdwave displays month-to-month changes in the sightings of a selected species
           of bird. Currently, the user can change the selected month in two ways,
           depending on their device size (as noted in <a href="http://www.neo.com/2014/10/03/responsive-javascript-with-enquirejs">this post</a>).
-          On larger screens there's a month slider, and on smaller screens there's a
-          select box with the list of available months. It would be nice to have '+' and
+          On larger screens there's a month slider:
+          <img src="/images/before.png" /></p>
+          
+          <p>And on smaller screens there's a select box with the list of available months:</p>
+          
+          <p><img src="/images/after.png" /></p>
+          
+          <p>It would be nice to have '+' and
           '-' buttons on either side of the select box for the user to go to the previous
           or next month without having to open the select box each time. This is exactly
           what we'll add in this article.</p>
           
-          <p>[Before screenshot]
-          [After screenshot]</p>
+          <p><img src="/images/after2.png" /></p>
           
           <h2 id="setup">Setup</h2>
           
           <p>The date selector component currently looks like this:</p>
           
-          <pre class="highlight clojure"><table><tbody><tr><td class="gutter gl"><div class="lineno">1</div><div class="lineno">2</div><div class="lineno">3</div><div class="lineno">4</div><div class="lineno">5</div><div class="lineno">6</div><div class="lineno">7</div><div class="lineno">8</div><div class="lineno">9</div><div class="lineno">10</div><div class="lineno">11</div><div class="lineno">12</div></td><td class="code"><span class="w">
-          </span><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">date-select</span><span class="w"> </span><span class="p">[</span><span class="n">model</span><span class="w"> </span><span class="n">owner</span><span class="p">]</span><span class="w">
+          <pre class="highlight clojure"><table><tbody><tr><td class="gutter gl"><div class="lineno">1</div><div class="lineno">2</div><div class="lineno">3</div><div class="lineno">4</div><div class="lineno">5</div><div class="lineno">6</div><div class="lineno">7</div><div class="lineno">8</div><div class="lineno">9</div><div class="lineno">10</div><div class="lineno">11</div></td><td class="code"><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">date-select</span><span class="w"> </span><span class="p">[</span><span class="n">model</span><span class="w"> </span><span class="n">owner</span><span class="p">]</span><span class="w">
             </span><span class="p">(</span><span class="nf">reify</span><span class="w">
               </span><span class="n">om/IRender</span><span class="w">
               </span><span class="p">(</span><span class="nf">render</span><span class="w"> </span><span class="p">[</span><span class="n">_</span><span class="p">]</span><span class="w">
@@ -127,13 +131,11 @@
           <p>We can add our <em>date-plus</em> component as a sibling to the select element, like
           so (only showing lines 7 and after from the above snippet):</p>
           
-          <pre class="highlight clojure"><table><tbody><tr><td class="gutter gl"><div class="lineno">1</div><div class="lineno">2</div><div class="lineno">3</div><div class="lineno">4</div><div class="lineno">5</div><div class="lineno">6</div><div class="lineno">7</div><div class="lineno">8</div></td><td class="code"><span class="n">...</span><span class="w">
-          </span><span class="p">(</span><span class="nb">apply</span><span class="w"> </span><span class="n">dom/select</span><span class="w"> </span><span class="o">#</span><span class="n">js</span><span class="w">
+          <pre class="highlight clojure"><table><tbody><tr><td class="gutter gl"><div class="lineno">1</div><div class="lineno">2</div><div class="lineno">3</div><div class="lineno">4</div><div class="lineno">5</div><div class="lineno">6</div></td><td class="code"><span class="p">(</span><span class="nb">apply</span><span class="w"> </span><span class="n">dom/select</span><span class="w"> </span><span class="o">#</span><span class="n">js</span><span class="w">
                  </span><span class="p">{</span><span class="no">:value</span><span class="w"> </span><span class="p">(</span><span class="no">:time-period</span><span class="w"> </span><span class="n">model</span><span class="p">)</span><span class="w">
                   </span><span class="no">:onChange</span><span class="w"> </span><span class="o">#</span><span class="p">(</span><span class="nf">put!</span><span class="w"> </span><span class="p">(</span><span class="nf">om/get-state</span><span class="w"> </span><span class="n">owner</span><span class="w"> </span><span class="no">:time-period-ch</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nb">..</span><span class="w"> </span><span class="n">%</span><span class="w"> </span><span class="n">-target</span><span class="w"> </span><span class="n">-value</span><span class="p">))}</span><span class="w">
                  </span><span class="p">(</span><span class="nb">map</span><span class="w"> </span><span class="o">#</span><span class="p">(</span><span class="nf">dom/option</span><span class="w"> </span><span class="o">#</span><span class="n">js</span><span class="w"> </span><span class="p">{</span><span class="no">:value</span><span class="w"> </span><span class="n">%</span><span class="p">}</span><span class="w"> </span><span class="p">(</span><span class="nf">month-name</span><span class="w"> </span><span class="n">%</span><span class="p">))</span><span class="w"> </span><span class="n">dates</span><span class="p">)))</span><span class="w">
           </span><span class="p">(</span><span class="nf">om/build</span><span class="w"> </span><span class="n">date-plus</span><span class="w"> </span><span class="p">(</span><span class="no">:time-period</span><span class="w"> </span><span class="n">model</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="no">:state</span><span class="w"> </span><span class="p">{</span><span class="no">:time-period-ch</span><span class="w"> </span><span class="p">(</span><span class="nf">om/get-state</span><span class="w"> </span><span class="n">owner</span><span class="w"> </span><span class="no">:time-period-ch</span><span class="p">)}})</span><span class="w">
-          </span><span class="n">...</span><span class="w">
           </span></td></tr></tbody></table></pre>
           <p>We know that <em>date-plus</em> needs access to the <em>time-period-ch</em>, but since it
           is part of the app's internal state, it needs to be passed in as local state to
@@ -145,7 +147,8 @@
               </span><span class="p">(</span><span class="nf">render</span><span class="w"> </span><span class="p">[</span><span class="n">_</span><span class="p">]</span><span class="w">
                 </span><span class="p">(</span><span class="nf">dom/span</span><span class="w"> </span><span class="o">#</span><span class="n">js</span><span class="w"> </span><span class="p">{</span><span class="no">:className</span><span class="w"> </span><span class="s">&quot;plus&quot;</span><span class="w">
                                </span><span class="no">:onClick</span><span class="w"> </span><span class="o">#</span><span class="p">(</span><span class="nf">update-month!</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="n">owner</span><span class="p">)}</span><span class="w"> </span><span class="s">&quot;+&quot;</span><span class="p">))))</span><span class="w">
-          </span></td></tr></tbody></table></pre><p>As you can see, it's a simple span with the + text in it, and a click handler
+          </span></td></tr></tbody></table></pre>
+          <p>As you can see, it's a simple span with the + text in it, and a click handler
           which calls off to an <em>update-month!</em> function. This is what that function
           looks like:</p>
           

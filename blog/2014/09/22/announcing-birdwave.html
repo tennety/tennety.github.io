@@ -16,7 +16,7 @@
   <meta content='black-translucent' name='apple-mobile-web-app-status-bar-style'>
   <meta content='on' http-equiv='cleartype'>
   <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
-  <title>Unexamined Privilege</title>
+  <title>Announcing Birdwave</title>
   <link href="/stylesheets/application.css" media="screen" rel="stylesheet" type="text/css" />
   
   <!-- IE backporting -->
@@ -72,44 +72,65 @@
       <div class='row'>
         <article class='small-9 columns'>
           <h1>
-            Unexamined Privilege
+            Announcing Birdwave
           </h1>
-          <h5 id="what-do-you-take-for-granted">What do you take for granted?</h5>
+          <p>I'm happy to announce a side project I've been working on with some of my
+          colleagues here at Neo: <a href="http://birdwave.neo.com">Birdwave</a>. An app to
+          visualize bird migrations across the US region, Birdwave falls at the
+          intersection of several different personal and professional interests for me.</p>
           
-          <p>When I walk down the street, guys don't ask me to smile. Random strangers don't fling compliments my way like alms for beggars. I don't have to go out of my way to look like I don't want to be bothered. I'm physically and mentally healthy, able, doing work that I love. I'm also a cis-gendered, straight male. These are things I take for granted. And for a lot of people like me, that doesn't feel like privilege.</p>
+          <h3 id="birds">Birds</h3>
+          <p>Even if you aren't an aspiring
+          <a href="http://en.wikipedia.org/wiki/Birdwatching">birder</a> like me, it's hard not to
+          be fascinated by how these tiny creatures cover hundreds of miles each year on
+          barely any food or rest.</p>
           
-          <h5 id="examining-your-privilege">Examining your privilege</h5>
+          <h3 id="big-data">Big Data</h3>
+          <p><a href="http://ebird.org/ebird/cmd?=Start">eBird.org</a> collects crowdsourced reports of
+          sightings of various species of birds all over the world, and provide the data
+          freely for non-commercial use. Just the reported sightings for the US region
+          from December 2012 through November 2013 turned out to be a whopping 20
+          gigabytes of data, consisting of 29.6 million data points across over 1700
+          species of birds.</p>
           
-          <p>I don't claim to be an expert on racism, sexism, or any of the myriad other forms of oppression in society. I'm not here to educate, either, since there is much I have to learn myself. What I can do is share what examining privilege looks like for me. In doing so, I hope others can see that it is not only possible, but necessary.</p>
+          <h3 id="data-visualization-with-d3js">Data Visualization with d3js</h3>
+          <p>I've already
+          <a href="http://www.neo.com/2014/04/21/choropleths-and-d3js">written</a> about choropleths
+          as a data visualization technique and how d3 is amazing at handling it.</p>
           
-          <h5 id="recognizing-oppression">Recognizing oppression</h5>
+          <h3 id="the-clojure-stack">The Clojure Stack</h3>
+          <p>This consisted of:</p>
           
-          <p>It's easy to know when we are not in a position of power. It is much harder, and way more important to realize when we are. For me, an example would be being in a room with mostly men. Or when I am among the majority who speak English, and a few non-native English speakers are present. Or I'm at a venue that isn't handicap accessible. See a pattern here? It's when I'm most comfortable that I need to look for who I'm marginalizing.</p>
+          <ul>
+            <li><a href="https://github.com/pedestal/pedestal">Pedestal</a> as the web framework</li>
+            <li><a href="http://www.datomic.com/">Datomic</a> as the data layer</li>
+            <li><a href="https://github.com/cognitect/transit-format">Transit</a> for data transfer</li>
+            <li><a href="https://github.com/clojure/clojurescript">ClojureScript</a> on the front-end</li>
+          </ul>
           
-          <h6 id="embrace-vulnerability">Embrace vulnerability</h6>
+          <p>Using Clojure and Datomic on the back-end made the large amount of data more
+          manageable to serve up as an API.</p>
           
-          <p>If you're like me, you don't like thinking about this stuff. Why should I leave my position of comfort to accommodate someone who clearly doesn't belong? Why can't they work on being like everyone else? Other reactions include defensiveness: I don't want to deal with the guilt of something my ancestors did! I'm not like the others in my dominant peer group, I have marginalized friends! If this echoes some of your thoughts, congratulations. You are on your way to noticing your privilege.</p>
+          <h3 id="reactjs-and-om">ReactJS and Om</h3>
+          <p>As a data-driven app, Birdwave's front-end lent itself really well to be
+          structured as a set of <a href="https://github.com/swannodette/om">Om</a> components.</p>
           
-          <p>Now recognize it as such. Embrace being vulnerable, being open to acknowledging that those without that same privilege still need a voice, a chair at the table.</p>
+          <h2 id="go-try-it-out">Go Try It Out!</h2>
+          <p>We'll be posting more about some of our learnings while building this app. In
+          the meanwhile, please try out the app and let us know what we can do to improve
+          it. Here are some good species to check out:</p>
           
-          <h5 id="its-ok-not-to-have-answers">It's ok not to have answers</h5>
+          <ul>
+            <li><a href="http://birdwave.neo.com/#/taxon/27926/2013/05">Black-throated Blue Warbler</a></li>
+            <li><a href="http://birdwave.neo.com/#/taxon/30632/2013/07">Baltimore Oriole</a></li>
+            <li><a href="http://birdwave.neo.com/#/taxon/30320/2013/08">Lazuli Bunting</a></li>
+          </ul>
           
-          <p>There are no easy answers here. I can't pretend discrimination doesn't happen by saying &quot;I don't see color, gender, etc.&quot;. I can't commiserate by saying, &quot;Oh, that happened to me&quot;, because no, it didn't. Someone with privilege, by definition, cannot experience discrimination. You can't ideate your way to someone's lived experience.</p>
-          
-          <p>What then? Empathy, always empathy. Know that there is anger, distrust, fear, and deep sadness in being marginalized. Know that it is constant, an inescapable cross to bear, all the time. You can set aside your caremad, they can't.</p>
-          
-          <p>Here are some other things you can do:
-          * Invite the marginalized to contribute. Make it safe for them to do so.
-          * Call people out on their privilege. Be OK with getting called out on yours.
-          * Be willing to learn, without having to be taught.
-          * Listen without agenda. Question your responses.</p>
-          
-          <h5 id="hold-me-accountable">Hold me accountable</h5>
-          
-          <p>This post is not only an attempt to help people see their privilege, but also a call to marginalized people to hold me and my peers accountable. Call me out! If there's anything in here that's offensive, I'd love to hear about it. This blog is open sourced, so pull requests are welcome. I can be reached privately via DM or email. In the interest of maintaining a safe environment, I will be moderating comments. Looking forward to your feedback.</p>
+          <p>For more detail on how to use the app, take a look at the &quot;How this works&quot;
+          section at the bottom of the page.</p>
           <ul class='read_next'>
-            <li><a href="/blog/2013/08/29/first-post.html">&laquo; Minimum Viable Blog</a></li>
-            <li><a href="/blog/2014/04/21/choropleths-and-d3.html">Choropleths and D3.js &raquo;</a></li>
+            <li><a href="/blog/2014/07/18/flickr-cljs.html">&laquo; Using the Flickr API with ClojureScript</a></li>
+            <li><a href="/blog/2014/10/03/responsive-js.html">Responsive JavaScript With EnquireJS &raquo;</a></li>
           </ul>
           <div id='disqus_thread'>
             <script type='text/javascript'>
@@ -131,9 +152,9 @@
         </article>
         <aside class='small-3 columns'>
           <ul class='credit'>
-            <li><a class="tiny button secondary round" href="/blog/tags/non-tech.html">non-tech</a></li>
-            <li><a class="tiny button secondary round" href="/blog/tags/privilege.html">privilege</a></li>
-            <li><a class="tiny button secondary round" href="/blog/tags/inclusion.html">inclusion</a></li>
+            <li><a class="tiny button secondary round" href="/blog/tags/announcements.html">announcements</a></li>
+            <li><a class="tiny button secondary round" href="/blog/tags/birdwave.html">birdwave</a></li>
+            <li><a class="tiny button secondary round" href="/blog/tags/clojurescript.html">ClojureScript</a></li>
           </ul>
         </aside>
       </div>

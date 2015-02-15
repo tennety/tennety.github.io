@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset='UTF-8'>
+  <meta content='' name='description'>
+  <meta content='' name='copyright'>
+  <link href='/humans.txt' rel='author' type='text/plain'>
+  <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+  <meta content='true' name='HandheldFriendly'>
+  <meta content='320' name='MobileOptimized'>
+  <meta content='yes' name='apple-mobile-web-app-capable'>
+  <meta content='black-translucent' name='apple-mobile-web-app-status-bar-style'>
+  <meta content='on' http-equiv='cleartype'>
+  <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
+  <title>Using the Flickr API with ClojureScript</title>
+  <link href="/stylesheets/application.css" media="screen" rel="stylesheet" type="text/css" />
+  
+  <!-- IE backporting -->
+  <!--[if lt IE 9]>
+  <script src="/javascripts/html5.js" type="text/javascript"></script>
+  <![endif]-->
+  
+</head>
+<body>
+  <div class='sticky'>
+    <nav class='top-bar home-border'>
+      <ul class='title-area'>
+        <li class='name'>
+          <h1>
+            <a href="/">Chandu Tennety</a>
+          </h1>
+        </li>
+        <li class='toggle-topbar menu-icon'>
+          <a href=''>
+            <span></span>
+          </a>
+        </li>
+      </ul>
+      <section class='top-bar-section'>
+        <ul class='left'>
+          <li>
+            <a href='/blog'>Blog</a>
+          </li>
+          <li>
+            <a href='/resume.html'>Resume</a>
+          </li>
+          <li>
+            <a href='https://github.com/tennety' target='_blank'>
+              <i class='icon-github-alt'></i>
+            </a>
+          </li>
+          <li>
+            <a href='https://twitter.com/tennety' target='_blank'>
+              <i class='icon-twitter'></i>
+            </a>
+          </li>
+          <li>
+            <a href='mailto:chandu.tennety+blog@gmail.com' target='_blank'>
+              <i class='icon-envelope-alt'></i>
+            </a>
+          </li>
+        </ul>
+      </section>
+    </nav>
+  </div>
+  <div class='row'>
+    <div class='small-12 columns'>
+      <div class='row'>
+        <article class='small-9 columns'>
+          <h1>
+            Using the Flickr API with ClojureScript
+          </h1>
+          <p>Flickr is an amazing resource for finding images to use in your applications, due to how well they manage licenses for their user-submitted content. These licenses are exposed in the Flickr API, making it easy to limit your search to, for example, only images with a Creative Commons <a href="http://creativecommons.org/licenses/by-sa/2.0/">Attribution Share-Alike</a> license.</p>
+          
+          <p>On one of our side projects at Neo (first talked about in <a href="http://www.neo.com/2014/04/21/choropleths-and-d3-js">this
+          post</a>), we needed to
+          display a picture of a selected species of bird. Not only did Flickr meet most
+          of our needs, it enabled us to get productive very quickly, thanks to a mature
+          interface, detailed documentation and exploration tools.</p>
+          
+          <p>Our use case was simple: A user would click on the name of a bird species. We
+          would search the Flickr API with that name, grab the first result, place the
+          image url in an <code>&lt;img&gt;</code> tag on our page and display the attribution alongside.
+          We didn't need a heavy-weight third-party library to accomplish this (though
+          <a href="https://github.com/search?q=flickr&amp;ref=simplesearch">there are many</a> out there
+          in several popular programming languages). All we needed was to be able to
+          construct two correct query urls.  This became easy to do with <a href="https://twitter.com/cemerick">Chas
+          Emerick's</a> <a href="https://github.com/cemerick/url">url</a>
+          library, which allows us to manipulate query strings as maps.</p>
+          
+          <h2 id="searching-photos-flickrphotossearch">Searching Photos (flickr.photos.search)</h2>
+          
+          <p>The search API is documented
+          <a href="https://www.flickr.com/services/api/flickr.photos.search.html">here</a>, and the
+          explorer tool for search is
+          <a href="https://www.flickr.com/services/api/explore/flickr.photos.search">here</a>. Of all
+          the available params, we needed 5:</p>
+          
+          <ul>
+            <li>text: the search text</li>
+            <li>per_page: the number of photos</li>
+            <li>sort: how to sort the results</li>
+            <li>license: which license the photos should have</li>
+            <li>extras: more information about the photo (such as a thumbnail url)</li>
+          </ul>
+          
+          <p>We decided on using only images with a Creative Commons
+          <a href="http://creativecommons.org/licenses/by/2.0/">Attribution</a> license. We also
+          wanted the results to always be sorted by relevance; since Flickr photos are
+          not limited to birds, there was a possibility of retrieving irrelevant results
+          for generic bird names. Of all the extras available, we only needed the owner
+          name and the smallest square thumbnail url. This meant that there were only two
+          variable elements to the search: the name of the bird, and how many photos we
+          wanted to retrieve. In ClojureScript:</p>
+          
+          <pre class="highlight clojure"><table><tbody><tr><td class="gutter gl"><div class="lineno">1</div><div class="lineno">2</div><div class="lineno">3</div><div class="lineno">4</div><div class="lineno">5</div><div class="lineno">6</div><div class="lineno">7</div><div class="lineno">8</div><div class="lineno">9</div><div class="lineno">10</div><div class="lineno">11</div></td><td class="code"><span class="w">    </span><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">BY</span><span class="w"> </span><span class="s">&quot;4&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">;; &quot;Attribution License&quot; url=&quot;http://creativecommons.org/licenses/by/2.0/&quot;
+          </span><span class="w">
+              </span><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">search-params</span><span class="w"> </span><span class="p">[</span><span class="n">text,</span><span class="w"> </span><span class="n">num-photos</span><span class="p">]</span><span class="w">
+                </span><span class="s">&quot;Params for searching num-photos (max 500) with text&quot;</span><span class="w">
+                </span><span class="p">{</span><span class="no">:text</span><span class="w"> </span><span class="p">(</span><span class="nb">str</span><span class="w"> </span><span class="s">&quot;\&quot;&quot;</span><span class="w"> </span><span class="n">text</span><span class="w"> </span><span class="s">&quot;\&quot;&quot;</span><span class="p">)</span><span class="w">
+                 </span><span class="no">:per_page</span><span class="w"> </span><span class="n">num-photos</span><span class="w">
+                 </span><span class="no">:method</span><span class="w"> </span><span class="s">&quot;flickr.photos.search&quot;</span><span class="w">
+                 </span><span class="no">:sort</span><span class="w"> </span><span class="s">&quot;relevance&quot;</span><span class="w">
+                 </span><span class="no">:license</span><span class="w"> </span><span class="n">BY</span><span class="w">
+                 </span><span class="no">:extras</span><span class="w"> </span><span class="s">&quot;owner_name,url_q&quot;</span><span class="p">})</span><span class="w">
+          </span></td></tr></tbody></table></pre>
+          <p>Calling the API with the params above results in a JSON response like the one
+          shown below (text: &quot;eastern kingbird&quot;, per_page: 1):</p>
+          
+          <pre class="highlight json"><table><tbody><tr><td class="gutter gl"><div class="lineno">1</div><div class="lineno">2</div><div class="lineno">3</div><div class="lineno">4</div><div class="lineno">5</div></td><td class="code"><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;photos&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;page&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pages&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;223&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;perpage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;total&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;223&quot;</span><span class="p">,</span><span class="w">
+                  </span><span class="s2">&quot;photo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                    </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4769690133&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;owner&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;31064702@N05&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;818406d0cd&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;server&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4123&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;farm&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Eastern Kingbird&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ispublic&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;isfriend&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;isfamily&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ownername&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Dawn Huczek&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;url_q&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https:\/\/farm5.staticflickr.com\/4123\/4769690133_818406d0cd_q.jpg&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;height_q&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;150&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;width_q&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;150&quot;</span><span class="w"> </span><span class="p">}</span><span class="w">
+                  </span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="s2">&quot;stat&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ok&quot;</span><span class="w"> </span><span class="p">}</span><span class="w">
+          </span></td></tr></tbody></table></pre>
+          <p>The JSON is pretty straightforward for retrieving the url and title, but if
+          you notice, there's no attribution information in the search result. To
+          obtain that, we need to make another call, detailed in the next section.</p>
+          
+          <h2 id="retrieving-attribution-flickrphotosgetinfo">Retrieving Attribution (flickr.photos.getInfo)</h2>
+          
+          <p>Among the values returned in the search result are the photo id and secret. We
+          can ask Flickr to give us more information about the photo using these values.
+          The getInfo API is documented
+          <a href="https://www.flickr.com/services/api/flickr.photos.getInfo.html">here</a>, and the
+          explorer tool is
+          <a href="https://www.flickr.com/services/api/explore/flickr.photos.getInfo">here</a>.</p>
+          
+          <p>Since there are no other params required, we can write another ClojureScript
+          function that builds the query map we need:</p>
+          
+          <pre class="highlight clojure"><table><tbody><tr><td class="gutter gl"><div class="lineno">1</div><div class="lineno">2</div><div class="lineno">3</div><div class="lineno">4</div><div class="lineno">5</div><div class="lineno">6</div></td><td class="code"><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">info-params</span><span class="w"> </span><span class="p">[</span><span class="n">photo-id,</span><span class="w"> </span><span class="n">secret</span><span class="p">]</span><span class="w">
+            </span><span class="s">&quot;Params for fetching details of photo with photo-id and optional secret&quot;</span><span class="w">
+            </span><span class="p">{</span><span class="no">:method</span><span class="w"> </span><span class="s">&quot;flickr.photos.getInfo&quot;</span><span class="w">
+             </span><span class="no">:photo_id</span><span class="w"> </span><span class="n">photo-id</span><span class="w">
+             </span><span class="no">:secret</span><span class="w"> </span><span class="n">secret</span><span class="p">})</span><span class="w">
+          </span></td></tr></tbody></table></pre>
+          <p>The JSON response looks like the one below:</p>
+          
+          <pre class="highlight json"><table><tbody><tr><td class="gutter gl"><div class="lineno">1</div><div class="lineno">2</div><div class="lineno">3</div><div class="lineno">4</div><div class="lineno">5</div><div class="lineno">6</div><div class="lineno">7</div><div class="lineno">8</div></td><td class="code"><span class="p">{</span><span class="w"> </span><span class="s2">&quot;photo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4769690133&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;818406d0cd&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;server&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4123&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;farm&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;dateuploaded&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1278473496&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;isfavorite&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;license&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;safety_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;rotation&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;originalsecret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;d7072dbb9a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;originalformat&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;jpg&quot;</span><span class="p">,</span><span class="w">
+              </span><span class="s2">&quot;owner&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;nsid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;31064702@N05&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Dawn Huczek&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;realname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;location&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;USA&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;iconserver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2915&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;iconfarm&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;path_alias&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="p">},</span><span class="w">
+              </span><span class="err">...</span><span class="w">
+              </span><span class="s2">&quot;urls&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                  </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;photopage&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;_content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https:\/\/www.flickr.com\/photos\/31064702@N05\/4769690133\/&quot;</span><span class="w"> </span><span class="p">}</span><span class="w">
+                </span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="s2">&quot;media&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;photo&quot;</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="s2">&quot;stat&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ok&quot;</span><span class="w"> </span><span class="p">}</span><span class="w">
+          </span></td></tr></tbody></table></pre>
+          <p>The attribution license requires that the image be linked to its Flickr photo
+          page, which is included in the urls section of the response. The owner details
+          and title information are the other pieces of information we look for. All
+          together, the following snippet can extract what we need:</p>
+          
+          <pre class="highlight clojure"><table><tbody><tr><td class="gutter gl"><div class="lineno">1</div><div class="lineno">2</div><div class="lineno">3</div><div class="lineno">4</div><div class="lineno">5</div><div class="lineno">6</div><div class="lineno">7</div><div class="lineno">8</div></td><td class="code"><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">attribution</span><span class="w"> </span><span class="p">[</span><span class="n">photo-info</span><span class="p">]</span><span class="w">
+            </span><span class="p">(</span><span class="k">let</span><span class="w"> </span><span class="p">[</span><span class="n">detail</span><span class="w">  </span><span class="p">(</span><span class="nb">-&gt;</span><span class="w"> </span><span class="n">photo-info</span><span class="w">
+                              </span><span class="p">(</span><span class="nf">js-&gt;clj</span><span class="p">)</span><span class="w">
+                              </span><span class="p">(</span><span class="nf">keywordize-keys</span><span class="p">)</span><span class="w">
+                              </span><span class="p">(</span><span class="no">:photo</span><span class="p">))]</span><span class="w">
+              </span><span class="p">{</span><span class="no">:by</span><span class="w"> </span><span class="p">(</span><span class="nb">first</span><span class="w"> </span><span class="p">(</span><span class="nb">filter</span><span class="w"> </span><span class="n">not-empty</span><span class="w"> </span><span class="p">(</span><span class="nf">vec</span><span class="w"> </span><span class="p">(</span><span class="nb">vals</span><span class="w"> </span><span class="p">(</span><span class="nb">select-keys</span><span class="w"> </span><span class="p">(</span><span class="no">:owner</span><span class="w"> </span><span class="n">detail</span><span class="p">)</span><span class="w"> </span><span class="p">[</span><span class="no">:realname</span><span class="w"> </span><span class="no">:username</span><span class="w"> </span><span class="no">:path_alias</span><span class="p">])))))</span><span class="w">
+               </span><span class="no">:url</span><span class="w"> </span><span class="p">(</span><span class="nf">get-in</span><span class="w"> </span><span class="n">detail</span><span class="w"> </span><span class="p">[</span><span class="no">:urls</span><span class="w"> </span><span class="no">:url</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="no">:_content</span><span class="p">])}))</span><span class="w">
+          </span></td></tr></tbody></table></pre>
+          <p>First we parse the JSON into a Clojure map using the <code>js-&gt;clj</code> macro, followed
+          by changing the string keys to keywords with <code>clojure.walk/keywordize-keys</code>.
+          The name to display can be the first non-empty value for the owner's
+          <code>realname</code>, <code>username</code> or <code>pathalias</code> properties. The photo page url is the
+          <code>_content</code> property of the first url in the returned set. We return a map of
+          the two values for use in the application.</p>
+          
+          <h2 id="building-the-url">Building the URL</h2>
+          
+          <p>This is the easy part. With the <code>cemerick.url/url</code> function, we can build an
+          instance of a URL object from a string, like so:</p>
+          
+          <pre class="highlight clojure"><table><tbody><tr><td class="gutter gl"><div class="lineno">1</div><div class="lineno">2</div></td><td class="code"><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">api-base-url</span><span class="w"> </span><span class="p">(</span><span class="nf">url</span><span class="w"> </span><span class="s">&quot;https://api.flickr.com/services/rest/&quot;</span><span class="p">))</span><span class="w">
+          </span></td></tr></tbody></table></pre>
+          <p>Then, we can assign it a query string by calling <code>assoc</code>:</p>
+          
+          <pre class="highlight clojure"><table><tbody><tr><td class="gutter gl"><div class="lineno">1</div><div class="lineno">2</div></td><td class="code"><span class="p">(</span><span class="nb">assoc</span><span class="w"> </span><span class="n">api-base-url</span><span class="w"> </span><span class="no">:query</span><span class="w"> </span><span class="p">{</span><span class="no">:api_key</span><span class="w"> </span><span class="s">&quot;my_super_flickr_key&quot;</span><span class="p">})</span><span class="w">
+          </span></td></tr></tbody></table></pre>
+          <p>Calling <code>str</code> on a URL instance returns its string representation which we can
+          use to make AJAX calls. So we can write this function to create a URL with
+          static and dynamic segments:</p>
+          
+          <pre class="highlight clojure"><table><tbody><tr><td class="gutter gl"><div class="lineno">1</div><div class="lineno">2</div><div class="lineno">3</div><div class="lineno">4</div><div class="lineno">5</div><div class="lineno">6</div><div class="lineno">7</div><div class="lineno">8</div><div class="lineno">9</div><div class="lineno">10</div><div class="lineno">11</div></td><td class="code"><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">api-key-params</span><span class="w"> </span><span class="p">{</span><span class="no">:api_key</span><span class="w"> </span><span class="s">&quot;my_super_flickr_key&quot;</span><span class="p">})</span><span class="w">
+          </span><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">format-params</span><span class="w"> </span><span class="p">{</span><span class="no">:format</span><span class="w"> </span><span class="s">&quot;json&quot;</span><span class="w"> </span><span class="no">:nojsoncallback</span><span class="w"> </span><span class="mi">1</span><span class="p">})</span><span class="w">
+          
+          </span><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">build-url</span><span class="w"> </span><span class="p">[</span><span class="n">func</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">args</span><span class="p">]</span><span class="w">
+            </span><span class="p">(</span><span class="k">let</span><span class="w"> </span><span class="p">[</span><span class="n">query</span><span class="w"> </span><span class="p">(</span><span class="nb">into</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="p">[</span><span class="n">api-key-params</span><span class="w">
+                                  </span><span class="n">format-params</span><span class="w">
+                                  </span><span class="p">(</span><span class="nb">apply</span><span class="w"> </span><span class="n">func</span><span class="w"> </span><span class="n">args</span><span class="p">)])]</span><span class="w">
+              </span><span class="p">(</span><span class="nb">-&gt;</span><span class="w"> </span><span class="n">api-base-url</span><span class="w">
+                  </span><span class="p">(</span><span class="nb">assoc</span><span class="w"> </span><span class="no">:query</span><span class="w"> </span><span class="n">query</span><span class="p">)</span><span class="w">
+                  </span><span class="nb">str</span><span class="p">)))</span><span class="w">
+          </span></td></tr></tbody></table></pre>
+          <p>The <code>build-url</code> function is a higher order function that allows us to pass in a
+          function name and its arguments, the results of which are tacked into the query
+          map along with the static api and format maps. (The format params ensure that
+          the response is JSON. Omitting the <code>nojsoncallback</code> param would return JSONP.)
+          We can use <code>build-url</code> with our <code>search-params</code> and <code>info-params</code> functions
+          above to generate the urls we need:</p>
+          
+          <pre class="highlight clojure"><table><tbody><tr><td class="gutter gl"><div class="lineno">1</div><div class="lineno">2</div><div class="lineno">3</div></td><td class="code"><span class="p">(</span><span class="nf">build-url</span><span class="w"> </span><span class="n">search-params</span><span class="w"> </span><span class="s">&quot;eastern kingbird&quot;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="c1">;; https://api.flickr.com/services/rest/?method=flickr.photos.search&amp;api_key=my_super_flickr_key&amp;text=eastern+kingbird&amp;license=4&amp;sort=relevance&amp;extras=owner_name%2C+url_q&amp;per_page=1&amp;format=json&amp;nojsoncallback=1
+          </span><span class="p">(</span><span class="nf">build-url</span><span class="w"> </span><span class="n">info-params</span><span class="w"> </span><span class="s">&quot;4769690133&quot;</span><span class="w"> </span><span class="s">&quot;818406d0cd&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">;; https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&amp;api_key=my_super_flickr_key&amp;photo_id=4769690133&amp;secret=818406d0cd&amp;format=json&amp;nojsoncallback=1
+          </span></td></tr></tbody></table></pre>
+          <p>Writing this little helper library took about an hour once we found the url
+          library. Managing this with plain strings would have been way more painful.</p>
+          
+          <h2 id="conclusion">Conclusion</h2>
+          
+          <p>With this, we have the ability to search photos and attributions on Flickr.
+          Stay tuned to see how we integrate this into our migration mapping app using
+          Om, ClojureScript's implementation of Facebook's ReactJS.</p>
+          <ul class='read_next'>
+            <li><a href="/blog/2014/04/21/choropleths-and-d3.html">&laquo; Choropleths and D3.js</a></li>
+            <li><a href="/blog/2014/09/22/announcing-birdwave.html">Announcing Birdwave &raquo;</a></li>
+          </ul>
+          <div id='disqus_thread'>
+            <script type='text/javascript'>
+              var disqus_shortname = 'tennety';
+              (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+              })();
+            </script>
+            <noscript>
+              Please enable JavaScript to view the
+              <a href="http://disqus.com/?ref_noscript">comments powered by Disqus</a>
+            </noscript>
+            <a class='dsq-brlink' href='http://disqus.com'>
+              <span class='logo-disqus'>Disqus</span>
+            </a>
+          </div>
+        </article>
+        <aside class='small-3 columns'>
+          <ul class='credit'>
+            <li><a class="tiny button secondary round" href="/blog/tags/tech.html">tech</a></li>
+            <li><a class="tiny button secondary round" href="/blog/tags/clojurescript.html">ClojureScript</a></li>
+            <li><a class="tiny button secondary round" href="/blog/tags/flickr.html">Flickr</a></li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </div>
+  <footer class='row'>
+    <!--[if lt IE 8]>
+    <div id="ie-warning-overlay">
+    <div id="ie-warning">
+    <h1>Did you know that your copy of Internet Explorer is out of date?</h1>
+    <p>
+    To get the best possible experience using our website, we recommend that you upgrade to the latest version or use another web browser.
+    Any of the following will provide a superior experience, not only on this site, but across the web.
+    </p>
+    <p>Just click one of the icons below to get to the download page.</p>
+    <ul>
+    <li>
+    <a href="http://microsoft.com/ie">
+    <%= image_tag 'browser_ie.gif', :alt => "Download Internet Explorer" %>
+    <p>Internet Explorer 8+</p>
+    </a>
+    </li>
+    <li>
+    <a href="http://mozilla.org/firefox">
+    <%= image_tag 'browser_firefox.gif', :alt => "Download Firefox" %>
+    <p>Firefox</p>
+    </a>
+    </li>
+    <li>
+    <a href="http://google.com/chrome">
+    <%= image_tag 'browser_chrome.gif', :alt => "Download Chrome" %>
+    <p>Google Chrome</p>
+    </a>
+    </li>
+    <li>
+    <a href="http://apple.com/safari">
+    <%= image_tag 'browser_safari.gif', :alt => "Download Safari" %>
+    <p>Safari</p>
+    </a>
+    </li>
+    <li>
+    <a href="http://opera.com">
+    <%= image_tag 'browser_opera.gif', :alt => "Download Opera" %>
+    <p>Opera</p>
+    </a>
+    </li>
+    </ul>
+    </div>
+    </div>
+    <![endif]-->
+  </footer>
+  <!-- jQuery -->
+  <script src='//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+  <script>
+    window.jQuery || document.write('<script src="/jquery.js"><\/script>');
+  </script>
+  <!-- Javascript -->
+  <script src="/javascripts/application.js" type="text/javascript"></script>
+  
+  <script type='text/javascript'>
+    $(document).ready(function () {
+    imgSizer.collate();
+    
+    });
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-46441071-1', 'tennety.github.io');
+    ga('send', 'pageview');
+  </script>
+</body>
+
+

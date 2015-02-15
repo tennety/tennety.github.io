@@ -69,40 +69,51 @@
   </div>
   <div class='row'>
     <div class='small-12 columns'>
-      <div class='row'>
-        <article class='small-9 columns'>
-          <h1>
-            Minimum Viable Blog
-          </h1>
-          <h4 id="hello-world">Hello World.</h4>
-          
-          <p>I have decided to start writing again. Life over the past year or two has taken some wild turns, and I'm starting to feel like some of my wild musings need a home again. In the spirit of Lean, here's the first iteration of my latest attempt at blogging.</p>
-          <ul class='read_next'>
-            <li>&nbsp;</li>
-            <li><a href="/blog/2013/09/04/unexamined-privilege.html">Unexamined Privilege &raquo;</a></li>
-          </ul>
-          <div id='disqus_thread'>
-            <script type='text/javascript'>
-              var disqus_shortname = 'tennety';
-              (function() {
-              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-              dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-              })();
-            </script>
-            <noscript>
-              Please enable JavaScript to view the
-              <a href="http://disqus.com/?ref_noscript">comments powered by Disqus</a>
-            </noscript>
-            <a class='dsq-brlink' href='http://disqus.com'>
-              <span class='logo-disqus'>Disqus</span>
-            </a>
-          </div>
-        </article>
-        <aside class='small-3 columns'>
-          <ul class='credit'>
-          </ul>
-        </aside>
+      <div class='articles'>
+        <div class='row'>
+          <article class='small-9 columns'>
+            <h1>
+              <a href="/blog/2013/09/04/unexamined-privilege.html">Unexamined Privilege</a>
+            </h1>
+            <h5 id="what-do-you-take-for-granted">What do you take for granted?</h5>
+            
+            <p>When I walk down the street, guys don't ask me to smile. Random strangers don't fling compliments my way like alms for beggars. I don't have to go out of my way to look like I don't want to be bothered. I'm physically and mentally healthy, able, doing work that I love. I'm also a cis-gendered, straight male. These are things I take for granted. And for a lot of people like me, that doesn't feel like privilege.</p>
+            <a class="secondary button radius" href="/blog/2013/09/04/unexamined-privilege.html">Read more &rarr;</a>
+          </article>
+          <aside class='small-3 columns'>
+            <ul class='credit'>
+              <li><a class="tiny button secondary round" href="/blog/tags/non-tech.html">non-tech</a></li>
+              <li><a class="tiny button secondary round" href="/blog/tags/privilege.html">privilege</a></li>
+              <li><a class="tiny button secondary round" href="/blog/tags/inclusion.html">inclusion</a></li>
+            </ul>
+          </aside>
+        </div>
+        <hr>
+        <div class='row'>
+          <article class='small-9 columns'>
+            <h1>
+              <a href="/blog/2013/08/29/first-post.html">Minimum Viable Blog</a>
+            </h1>
+            <h4 id="hello-world">Hello World.</h4>
+            
+            <p>I have decided to start writing again. Life over the past year or two has taken some wild turns, and I'm starting to feel like some of my wild musings need a home again. In the spirit of Lean, here's the first iteration of my latest attempt at blogging.</p>
+          </article>
+          <aside class='small-3 columns'>
+            <ul class='credit'>
+            </ul>
+          </aside>
+        </div>
+      </div>
+      <div class='pagination-centered'>
+        <ul class='pagination'>
+          <li class='arrow'>
+            <a href="/blog/">&laquo; Newer</a>
+          </li>
+          p = nil
+          (i...page_number).each do p = p ? p.metadata[:locals]['prev_page'] : prev_page; end
+          <li><a href="#">1</a></li>
+          <li class='current unavailable'><a href="#">2</a></li>
+        </ul>
       </div>
     </div>
   </div>
@@ -173,5 +184,4 @@
     ga('send', 'pageview');
   </script>
 </body>
-
 

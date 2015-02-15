@@ -27,21 +27,25 @@
 &lt;p&gt;Birdwave displays month-to-month changes in the sightings of a selected species
 of bird. Currently, the user can change the selected month in two ways,
 depending on their device size (as noted in &lt;a href="http://www.neo.com/2014/10/03/responsive-javascript-with-enquirejs"&gt;this post&lt;/a&gt;).
-On larger screens there's a month slider, and on smaller screens there's a
-select box with the list of available months. It would be nice to have '+' and
+On larger screens there's a month slider:
+&lt;img src="/images/before.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;And on smaller screens there's a select box with the list of available months:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/images/after.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;It would be nice to have '+' and
 '-' buttons on either side of the select box for the user to go to the previous
 or next month without having to open the select box each time. This is exactly
 what we'll add in this article.&lt;/p&gt;
 
-&lt;p&gt;[Before screenshot]
-[After screenshot]&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/after2.png" /&gt;&lt;/p&gt;
 
 &lt;h2 id="setup"&gt;Setup&lt;/h2&gt;
 
 &lt;p&gt;The date selector component currently looks like this:&lt;/p&gt;
 
-&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;div class="lineno"&gt;7&lt;/div&gt;&lt;div class="lineno"&gt;8&lt;/div&gt;&lt;div class="lineno"&gt;9&lt;/div&gt;&lt;div class="lineno"&gt;10&lt;/div&gt;&lt;div class="lineno"&gt;11&lt;/div&gt;&lt;div class="lineno"&gt;12&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;date-select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;div class="lineno"&gt;7&lt;/div&gt;&lt;div class="lineno"&gt;8&lt;/div&gt;&lt;div class="lineno"&gt;9&lt;/div&gt;&lt;div class="lineno"&gt;10&lt;/div&gt;&lt;div class="lineno"&gt;11&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;date-select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
   &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;reify&lt;/span&gt;&lt;span class="w"&gt;
     &lt;/span&gt;&lt;span class="n"&gt;om/IRender&lt;/span&gt;&lt;span class="w"&gt;
     &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;render&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
@@ -73,13 +77,11 @@ for the '-' button, we find the previous date and push it onto the channel.&lt;/
 &lt;p&gt;We can add our &lt;em&gt;date-plus&lt;/em&gt; component as a sibling to the select element, like
 so (only showing lines 7 and after from the above snippet):&lt;/p&gt;
 
-&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;div class="lineno"&gt;7&lt;/div&gt;&lt;div class="lineno"&gt;8&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="n"&gt;...&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;apply&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dom/select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt;
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;apply&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dom/select&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt;
        &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:value&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;:time-period&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
         &lt;/span&gt;&lt;span class="no"&gt;:onChange&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;put!&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;om/get-state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:time-period-ch&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;..&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;%&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;-target&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;-value&lt;/span&gt;&lt;span class="p"&gt;))}&lt;/span&gt;&lt;span class="w"&gt;
        &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;map&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;dom/option&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:value&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;month-name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;%&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dates&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;om/build&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;date-plus&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;:time-period&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:time-period-ch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;om/get-state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:time-period-ch&lt;/span&gt;&lt;span class="p"&gt;)}})&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;span class="n"&gt;...&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
 &lt;p&gt;We know that &lt;em&gt;date-plus&lt;/em&gt; needs access to the &lt;em&gt;time-period-ch&lt;/em&gt;, but since it
 is part of the app's internal state, it needs to be passed in as local state to
@@ -91,7 +93,8 @@ the component. Now we can build the component itself:&lt;/p&gt;
     &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;render&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
       &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;dom/span&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="n"&gt;js&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:className&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;plus&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;
                      &lt;/span&gt;&lt;span class="no"&gt;:onClick&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;update-month!&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;)}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;+&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))))&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;&lt;p&gt;As you can see, it's a simple span with the + text in it, and a click handler
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;As you can see, it's a simple span with the + text in it, and a click handler
 which calls off to an &lt;em&gt;update-month!&lt;/em&gt; function. This is what that function
 looks like:&lt;/p&gt;
 
@@ -242,6 +245,375 @@ user input that your app can react to.&lt;/p&gt;
 </content>
   </entry>
   <entry>
+    <title>Announcing Birdwave</title>
+    <link rel="alternate" href="/blog/2014/09/22/announcing-birdwave.html"/>
+    <id>/blog/2014/09/22/announcing-birdwave.html</id>
+    <published>2014-09-22T07:00:00Z</published>
+    <updated>2014-09-22T07:00:00Z</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <summary type="html">&lt;p&gt;I'm happy to announce a side project I've been working on with some of my
+colleagues here at Neo: &lt;a href="http://birdwave.neo.com"&gt;Birdwave&lt;/a&gt;. An app to
+visualize bird migrations across the US region, Birdwave falls at the
+intersection of several different personal and professional interests for me.&lt;/p&gt;
+</summary>
+    <content type="html">&lt;p&gt;I'm happy to announce a side project I've been working on with some of my
+colleagues here at Neo: &lt;a href="http://birdwave.neo.com"&gt;Birdwave&lt;/a&gt;. An app to
+visualize bird migrations across the US region, Birdwave falls at the
+intersection of several different personal and professional interests for me.&lt;/p&gt;
+
+&lt;h3 id="birds"&gt;Birds&lt;/h3&gt;
+&lt;p&gt;Even if you aren't an aspiring
+&lt;a href="http://en.wikipedia.org/wiki/Birdwatching"&gt;birder&lt;/a&gt; like me, it's hard not to
+be fascinated by how these tiny creatures cover hundreds of miles each year on
+barely any food or rest.&lt;/p&gt;
+
+&lt;h3 id="big-data"&gt;Big Data&lt;/h3&gt;
+&lt;p&gt;&lt;a href="http://ebird.org/ebird/cmd?=Start"&gt;eBird.org&lt;/a&gt; collects crowdsourced reports of
+sightings of various species of birds all over the world, and provide the data
+freely for non-commercial use. Just the reported sightings for the US region
+from December 2012 through November 2013 turned out to be a whopping 20
+gigabytes of data, consisting of 29.6 million data points across over 1700
+species of birds.&lt;/p&gt;
+
+&lt;h3 id="data-visualization-with-d3js"&gt;Data Visualization with d3js&lt;/h3&gt;
+&lt;p&gt;I've already
+&lt;a href="http://www.neo.com/2014/04/21/choropleths-and-d3js"&gt;written&lt;/a&gt; about choropleths
+as a data visualization technique and how d3 is amazing at handling it.&lt;/p&gt;
+
+&lt;h3 id="the-clojure-stack"&gt;The Clojure Stack&lt;/h3&gt;
+&lt;p&gt;This consisted of:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="https://github.com/pedestal/pedestal"&gt;Pedestal&lt;/a&gt; as the web framework&lt;/li&gt;
+  &lt;li&gt;&lt;a href="http://www.datomic.com/"&gt;Datomic&lt;/a&gt; as the data layer&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://github.com/cognitect/transit-format"&gt;Transit&lt;/a&gt; for data transfer&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://github.com/clojure/clojurescript"&gt;ClojureScript&lt;/a&gt; on the front-end&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Using Clojure and Datomic on the back-end made the large amount of data more
+manageable to serve up as an API.&lt;/p&gt;
+
+&lt;h3 id="reactjs-and-om"&gt;ReactJS and Om&lt;/h3&gt;
+&lt;p&gt;As a data-driven app, Birdwave's front-end lent itself really well to be
+structured as a set of &lt;a href="https://github.com/swannodette/om"&gt;Om&lt;/a&gt; components.&lt;/p&gt;
+
+&lt;h2 id="go-try-it-out"&gt;Go Try It Out!&lt;/h2&gt;
+&lt;p&gt;We'll be posting more about some of our learnings while building this app. In
+the meanwhile, please try out the app and let us know what we can do to improve
+it. Here are some good species to check out:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="http://birdwave.neo.com/#/taxon/27926/2013/05"&gt;Black-throated Blue Warbler&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="http://birdwave.neo.com/#/taxon/30632/2013/07"&gt;Baltimore Oriole&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="http://birdwave.neo.com/#/taxon/30320/2013/08"&gt;Lazuli Bunting&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For more detail on how to use the app, take a look at the &amp;quot;How this works&amp;quot;
+section at the bottom of the page.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Using the Flickr API with ClojureScript</title>
+    <link rel="alternate" href="/blog/2014/07/18/flickr-cljs.html"/>
+    <id>/blog/2014/07/18/flickr-cljs.html</id>
+    <published>2014-07-18T07:00:00Z</published>
+    <updated>2014-07-18T07:00:00Z</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <summary type="html">&lt;p&gt;Flickr is an amazing resource for finding images to use in your applications, due to how well they manage licenses for their user-submitted content. These licenses are exposed in the Flickr API, making it easy to limit your search to, for example, only images with a Creative Commons &lt;a href="http://creativecommons.org/licenses/by-sa/2.0/"&gt;Attribution Share-Alike&lt;/a&gt; license.&lt;/p&gt;
+</summary>
+    <content type="html">&lt;p&gt;Flickr is an amazing resource for finding images to use in your applications, due to how well they manage licenses for their user-submitted content. These licenses are exposed in the Flickr API, making it easy to limit your search to, for example, only images with a Creative Commons &lt;a href="http://creativecommons.org/licenses/by-sa/2.0/"&gt;Attribution Share-Alike&lt;/a&gt; license.&lt;/p&gt;
+
+&lt;p&gt;On one of our side projects at Neo (first talked about in &lt;a href="http://www.neo.com/2014/04/21/choropleths-and-d3-js"&gt;this
+post&lt;/a&gt;), we needed to
+display a picture of a selected species of bird. Not only did Flickr meet most
+of our needs, it enabled us to get productive very quickly, thanks to a mature
+interface, detailed documentation and exploration tools.&lt;/p&gt;
+
+&lt;p&gt;Our use case was simple: A user would click on the name of a bird species. We
+would search the Flickr API with that name, grab the first result, place the
+image url in an &lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt; tag on our page and display the attribution alongside.
+We didn't need a heavy-weight third-party library to accomplish this (though
+&lt;a href="https://github.com/search?q=flickr&amp;amp;ref=simplesearch"&gt;there are many&lt;/a&gt; out there
+in several popular programming languages). All we needed was to be able to
+construct two correct query urls.  This became easy to do with &lt;a href="https://twitter.com/cemerick"&gt;Chas
+Emerick's&lt;/a&gt; &lt;a href="https://github.com/cemerick/url"&gt;url&lt;/a&gt;
+library, which allows us to manipulate query strings as maps.&lt;/p&gt;
+
+&lt;h2 id="searching-photos-flickrphotossearch"&gt;Searching Photos (flickr.photos.search)&lt;/h2&gt;
+
+&lt;p&gt;The search API is documented
+&lt;a href="https://www.flickr.com/services/api/flickr.photos.search.html"&gt;here&lt;/a&gt;, and the
+explorer tool for search is
+&lt;a href="https://www.flickr.com/services/api/explore/flickr.photos.search"&gt;here&lt;/a&gt;. Of all
+the available params, we needed 5:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;text: the search text&lt;/li&gt;
+  &lt;li&gt;per_page: the number of photos&lt;/li&gt;
+  &lt;li&gt;sort: how to sort the results&lt;/li&gt;
+  &lt;li&gt;license: which license the photos should have&lt;/li&gt;
+  &lt;li&gt;extras: more information about the photo (such as a thumbnail url)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We decided on using only images with a Creative Commons
+&lt;a href="http://creativecommons.org/licenses/by/2.0/"&gt;Attribution&lt;/a&gt; license. We also
+wanted the results to always be sorted by relevance; since Flickr photos are
+not limited to birds, there was a possibility of retrieving irrelevant results
+for generic bird names. Of all the extras available, we only needed the owner
+name and the smallest square thumbnail url. This meant that there were only two
+variable elements to the search: the name of the bird, and how many photos we
+wanted to retrieve. In ClojureScript:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;div class="lineno"&gt;7&lt;/div&gt;&lt;div class="lineno"&gt;8&lt;/div&gt;&lt;div class="lineno"&gt;9&lt;/div&gt;&lt;div class="lineno"&gt;10&lt;/div&gt;&lt;div class="lineno"&gt;11&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;BY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;4&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;;; &amp;quot;Attribution License&amp;quot; url=&amp;quot;http://creativecommons.org/licenses/by/2.0/&amp;quot;
+&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;search-params&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;text,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;num-photos&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Params for searching num-photos (max 500) with text&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:text&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;\&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;\&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+       &lt;/span&gt;&lt;span class="no"&gt;:per_page&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;num-photos&lt;/span&gt;&lt;span class="w"&gt;
+       &lt;/span&gt;&lt;span class="no"&gt;:method&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;flickr.photos.search&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;
+       &lt;/span&gt;&lt;span class="no"&gt;:sort&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;relevance&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;
+       &lt;/span&gt;&lt;span class="no"&gt;:license&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;BY&lt;/span&gt;&lt;span class="w"&gt;
+       &lt;/span&gt;&lt;span class="no"&gt;:extras&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;owner_name,url_q&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;Calling the API with the params above results in a JSON response like the one
+shown below (text: &amp;quot;eastern kingbird&amp;quot;, per_page: 1):&lt;/p&gt;
+
+&lt;pre class="highlight json"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;photos&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;page&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;pages&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;223&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;perpage&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;223&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;photo&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="w"&gt;
+          &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;4769690133&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;owner&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;31064702@N05&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;secret&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;818406d0cd&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;server&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;4123&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;farm&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;title&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Eastern Kingbird&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;ispublic&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;isfriend&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;isfamily&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;ownername&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Dawn Huczek&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;url_q&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;https:\/\/farm5.staticflickr.com\/4123\/4769690133_818406d0cd_q.jpg&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;height_q&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;150&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;width_q&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;150&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;stat&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;ok&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;The JSON is pretty straightforward for retrieving the url and title, but if
+you notice, there's no attribution information in the search result. To
+obtain that, we need to make another call, detailed in the next section.&lt;/p&gt;
+
+&lt;h2 id="retrieving-attribution-flickrphotosgetinfo"&gt;Retrieving Attribution (flickr.photos.getInfo)&lt;/h2&gt;
+
+&lt;p&gt;Among the values returned in the search result are the photo id and secret. We
+can ask Flickr to give us more information about the photo using these values.
+The getInfo API is documented
+&lt;a href="https://www.flickr.com/services/api/flickr.photos.getInfo.html"&gt;here&lt;/a&gt;, and the
+explorer tool is
+&lt;a href="https://www.flickr.com/services/api/explore/flickr.photos.getInfo"&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Since there are no other params required, we can write another ClojureScript
+function that builds the query map we need:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;info-params&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;photo-id,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;secret&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Params for fetching details of photo with photo-id and optional secret&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:method&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;flickr.photos.getInfo&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;
+   &lt;/span&gt;&lt;span class="no"&gt;:photo_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;photo-id&lt;/span&gt;&lt;span class="w"&gt;
+   &lt;/span&gt;&lt;span class="no"&gt;:secret&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;secret&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;The JSON response looks like the one below:&lt;/p&gt;
+
+&lt;pre class="highlight json"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;div class="lineno"&gt;7&lt;/div&gt;&lt;div class="lineno"&gt;8&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;photo&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;4769690133&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;secret&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;818406d0cd&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;server&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;4123&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;farm&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;dateuploaded&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;1278473496&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;isfavorite&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;license&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;safety_level&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;rotation&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;originalsecret&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;d7072dbb9a&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;originalformat&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;jpg&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;owner&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;nsid&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;31064702@N05&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;username&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Dawn Huczek&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;realname&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;location&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;USA&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;iconserver&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;2915&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;iconfarm&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;path_alias&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="err"&gt;...&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;urls&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;url&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;photopage&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;_content&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;https:\/\/www.flickr.com\/photos\/31064702@N05\/4769690133\/&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;media&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;photo&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;stat&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;ok&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;The attribution license requires that the image be linked to its Flickr photo
+page, which is included in the urls section of the response. The owner details
+and title information are the other pieces of information we look for. All
+together, the following snippet can extract what we need:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;div class="lineno"&gt;7&lt;/div&gt;&lt;div class="lineno"&gt;8&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;attribution&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;photo-info&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;let&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;detail&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;photo-info&lt;/span&gt;&lt;span class="w"&gt;
+                    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;js-&amp;gt;clj&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+                    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;keywordize-keys&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+                    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;:photo&lt;/span&gt;&lt;span class="p"&gt;))]&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:by&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;first&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;filter&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;not-empty&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;vec&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;vals&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;select-keys&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;:owner&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;detail&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="no"&gt;:realname&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:username&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:path_alias&lt;/span&gt;&lt;span class="p"&gt;])))))&lt;/span&gt;&lt;span class="w"&gt;
+     &lt;/span&gt;&lt;span class="no"&gt;:url&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;get-in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;detail&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="no"&gt;:urls&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:url&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:_content&lt;/span&gt;&lt;span class="p"&gt;])}))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;First we parse the JSON into a Clojure map using the &lt;code&gt;js-&amp;gt;clj&lt;/code&gt; macro, followed
+by changing the string keys to keywords with &lt;code&gt;clojure.walk/keywordize-keys&lt;/code&gt;.
+The name to display can be the first non-empty value for the owner's
+&lt;code&gt;realname&lt;/code&gt;, &lt;code&gt;username&lt;/code&gt; or &lt;code&gt;pathalias&lt;/code&gt; properties. The photo page url is the
+&lt;code&gt;_content&lt;/code&gt; property of the first url in the returned set. We return a map of
+the two values for use in the application.&lt;/p&gt;
+
+&lt;h2 id="building-the-url"&gt;Building the URL&lt;/h2&gt;
+
+&lt;p&gt;This is the easy part. With the &lt;code&gt;cemerick.url/url&lt;/code&gt; function, we can build an
+instance of a URL object from a string, like so:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;api-base-url&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;url&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;https://api.flickr.com/services/rest/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;Then, we can assign it a query string by calling &lt;code&gt;assoc&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;assoc&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;api-base-url&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:query&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:api_key&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;my_super_flickr_key&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;Calling &lt;code&gt;str&lt;/code&gt; on a URL instance returns its string representation which we can
+use to make AJAX calls. So we can write this function to create a URL with
+static and dynamic segments:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;div class="lineno"&gt;7&lt;/div&gt;&lt;div class="lineno"&gt;8&lt;/div&gt;&lt;div class="lineno"&gt;9&lt;/div&gt;&lt;div class="lineno"&gt;10&lt;/div&gt;&lt;div class="lineno"&gt;11&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;api-key-params&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:api_key&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;my_super_flickr_key&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;format-params&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="no"&gt;:format&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;json&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:nojsoncallback&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;&lt;span class="w"&gt;
+
+&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;build-url&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;let&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;into&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;api-key-params&lt;/span&gt;&lt;span class="w"&gt;
+                        &lt;/span&gt;&lt;span class="n"&gt;format-params&lt;/span&gt;&lt;span class="w"&gt;
+                        &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;apply&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;)])]&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;api-base-url&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;assoc&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="no"&gt;:query&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+        &lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;build-url&lt;/code&gt; function is a higher order function that allows us to pass in a
+function name and its arguments, the results of which are tacked into the query
+map along with the static api and format maps. (The format params ensure that
+the response is JSON. Omitting the &lt;code&gt;nojsoncallback&lt;/code&gt; param would return JSONP.)
+We can use &lt;code&gt;build-url&lt;/code&gt; with our &lt;code&gt;search-params&lt;/code&gt; and &lt;code&gt;info-params&lt;/code&gt; functions
+above to generate the urls we need:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;build-url&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;search-params&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;eastern kingbird&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;;; https://api.flickr.com/services/rest/?method=flickr.photos.search&amp;amp;api_key=my_super_flickr_key&amp;amp;text=eastern+kingbird&amp;amp;license=4&amp;amp;sort=relevance&amp;amp;extras=owner_name%2C+url_q&amp;amp;per_page=1&amp;amp;format=json&amp;amp;nojsoncallback=1
+&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;build-url&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;info-params&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;4769690133&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;818406d0cd&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;;; https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&amp;amp;api_key=my_super_flickr_key&amp;amp;photo_id=4769690133&amp;amp;secret=818406d0cd&amp;amp;format=json&amp;amp;nojsoncallback=1
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;Writing this little helper library took about an hour once we found the url
+library. Managing this with plain strings would have been way more painful.&lt;/p&gt;
+
+&lt;h2 id="conclusion"&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;With this, we have the ability to search photos and attributions on Flickr.
+Stay tuned to see how we integrate this into our migration mapping app using
+Om, ClojureScript's implementation of Facebook's ReactJS.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Choropleths and D3.js</title>
+    <link rel="alternate" href="/blog/2014/04/21/choropleths-and-d3.html"/>
+    <id>/blog/2014/04/21/choropleths-and-d3.html</id>
+    <published>2014-04-21T07:00:00Z</published>
+    <updated>2014-04-21T07:00:00Z</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <summary type="html">&lt;p&gt;Choropleths are a great way to get a really clear depiction of how a statistic
+varies by location. I'd like to share my experience from a project that we're
+not quite ready to announce yet.&lt;/p&gt;
+
+&lt;p&gt;In our case, the statistic in question is the frequency of
+sightings for a given species of bird. The idea is to be able to see which&lt;/p&gt;
+</summary>
+    <content type="html">&lt;p&gt;Choropleths are a great way to get a really clear depiction of how a statistic
+varies by location. I'd like to share my experience from a project that we're
+not quite ready to announce yet.&lt;/p&gt;
+
+&lt;p&gt;In our case, the statistic in question is the frequency of
+sightings for a given species of bird. The idea is to be able to see which
+areas of the country reflect a greater frequency month to month in order to get
+a feel for when and how the bird migrates.&lt;/p&gt;
+
+&lt;p&gt;To have the map dynamically change with new data values, we need the map to be
+composed of DOM elements whose styles can be manipulated based on changing
+data. D3.js gives us ways to do exactly that, and more. The approach consists
+of three components:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Generate an SVG map based on standard geographical data&lt;/li&gt;
+  &lt;li&gt;Associate the map elements with the bird frequency data&lt;/li&gt;
+  &lt;li&gt;Map the frequency numbers to visual styles&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The following subsections describe each of these components in detail.&lt;/p&gt;
+
+&lt;h2 id="geojsonhttpgeojsonorg-and-topojsonhttpsgithubcommbostocktopojson"&gt;&lt;a href="http://geojson.org/"&gt;GeoJSON&lt;/a&gt; and &lt;a href="https://github.com/mbostock/topojson"&gt;TopoJSON&lt;/a&gt;&lt;/h2&gt;
+
+&lt;p&gt;GeoJSON is a JSON standard that represents geographical data. For our purposes,
+we can think of it as a grouping of objects in terms of their geometry.
+Countries, states, counties, rivers and roads may all be represented in terms
+of points and lines in a coordinate system. Easy, right?&lt;/p&gt;
+
+&lt;p&gt;Taking that a little further, TopoJSON is an extension to GeoJSON that has a
+notion of topology and shared geometry. So, for instance, if two polygons have
+a shared edge, GeoJSON will use two lines for it, but TopoJSON will use only
+one. For large geometries, TopoJSON can effect a dramatic decrease in file size.&lt;/p&gt;
+
+&lt;p&gt;To get your hands dirty with some GeoJSON, head &lt;a href="http://geojson.io"&gt;to geojson.io&lt;/a&gt;. For
+an introduction to how TopoJSON works, I highly recommend
+&lt;a href="http://bost.ocks.org/mike/map/"&gt;the author's example&lt;/a&gt;. Another invaluable resource
+is the &lt;a href="https://github.com/mbostock/us-atlas"&gt;US Atlas&lt;/a&gt; project, which comes with a
+handy Makefile to generate TopoJSON for almost any kind of US map you want.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://twitter.com/mbostock"&gt;Mike Bostock&lt;/a&gt;, who created TopoJSON, is also the
+author of D3. Coincidence? No, not at all, because D3.js is built to consume
+both GeoJSON and TopoJSON to create SVG path elements in the browser. In just
+&lt;a href="http://bl.ocks.org/mbostock/4136647"&gt;a few lines of code&lt;/a&gt;, we can load up
+TopoJSON from the server and display a beautiful county map of the United
+States in the browser.&lt;/p&gt;
+
+&lt;h2 id="d3js-data-binding"&gt;D3.js Data Binding&lt;/h2&gt;
+
+&lt;p&gt;D3's most powerful feature is its data binding, which allows us to attach
+arbitrary data to DOM elements, and then manipulate any number of their
+properties as a function of that data. I recommend &lt;a href="http://alignedleft.com/tutorials"&gt;Scott Murray's
+tutorials&lt;/a&gt; for anyone looking to get a better
+understanding of this concept.&lt;/p&gt;
+
+&lt;p&gt;In our case, it's only a matter of being able to uniquely identify any county,
+and have a mechanism to look up its bird frequency when needed. We do this by
+ensuring that the generated TopoJSON for the map contains the state and county
+name for each county as part of its bound data. Then, as we retrieve new data
+for county-wise bird sightings, we can look up the frequency using this info.&lt;/p&gt;
+
+&lt;p&gt;For instance, say Whatcom County in Washington reported 1 sighting of the
+American Bittern in Feb 2013. Once we can determine which SVG element
+represents that county, we can render its color proportional to 1 bird
+sighting. To do this with vanilla JS on a scale of over 2700 counties across
+the US seems prohibitive, but D3's selection API makes it easy and fast. As
+a special touch, the duration of an element's transition from one color to
+another is also a function of the data, so we can gently animate the colors
+as we move from month to month. Time for some code:&lt;/p&gt;
+
+&lt;pre class="highlight clojure"&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl"&gt;&lt;div class="lineno"&gt;1&lt;/div&gt;&lt;div class="lineno"&gt;2&lt;/div&gt;&lt;div class="lineno"&gt;3&lt;/div&gt;&lt;div class="lineno"&gt;4&lt;/div&gt;&lt;div class="lineno"&gt;5&lt;/div&gt;&lt;div class="lineno"&gt;6&lt;/div&gt;&lt;div class="lineno"&gt;7&lt;/div&gt;&lt;div class="lineno"&gt;8&lt;/div&gt;&lt;div class="lineno"&gt;9&lt;/div&gt;&lt;div class="lineno"&gt;10&lt;/div&gt;&lt;div class="lineno"&gt;11&lt;/div&gt;&lt;div class="lineno"&gt;12&lt;/div&gt;&lt;div class="lineno"&gt;13&lt;/div&gt;&lt;div class="lineno"&gt;14&lt;/div&gt;&lt;div class="lineno"&gt;15&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;freq-duration&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;freq-for-county&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt;
+
+    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;freq-color&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;color&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;freq-for-county&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;&lt;span class="w"&gt;
+
+    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;defn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;update-counties&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;populate-freqs&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+      &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;js/d3&lt;/span&gt;&lt;span class="w"&gt;
+           &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;.selectAll&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;path.county&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+           &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;.transition&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+           &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;.duration&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;freq-duration&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+           &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;.style&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;fill&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;freq-color&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+           &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;.style&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;stroke&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;freq-color&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/pre&gt;
+&lt;p&gt;In the above code snippet, &lt;code&gt;update-counties&lt;/code&gt; gets called with the response from
+the server every time the month (or the species of bird selected) changes.
+&lt;code&gt;populate-freqs&lt;/code&gt; updates the frequency lookup table for each county name. Then
+D3 is used to select all the county elements (&lt;code&gt;path.county&lt;/code&gt;), and specify that
+each of those should transition to the new &lt;code&gt;freq-color&lt;/code&gt; over a duration of
+&lt;code&gt;freq-duration&lt;/code&gt;.  Both &lt;code&gt;freq-color&lt;/code&gt; and &lt;code&gt;freq-duration&lt;/code&gt; take a single argument,
+&lt;code&gt;data&lt;/code&gt;, which is simply the data bound to each county element, consisting of
+(among other things) the state and county name.&lt;code&gt;freq-for-county&lt;/code&gt; is the
+frequency lookup function. Pretty concise for all the work it's doing!&lt;/p&gt;
+
+&lt;p&gt;If you notice, &lt;code&gt;freq-color&lt;/code&gt; uses a &lt;code&gt;color&lt;/code&gt; function to return a color from a
+frequency value. This function is a special D3.js function called a &lt;a href="https://github.com/mbostock/d3/wiki/Quantitative-Scales#quantile-scales"&gt;quantile
+scale&lt;/a&gt;.
+Its primary purpose is to take an input value, and return a transformed value
+in a specified range. In the case of &lt;code&gt;color&lt;/code&gt;, it takes a number, and maps it in
+a range of 9 colors based on where it falls between 0 and 5. The 9 colors come
+from &lt;a href="http://colorbrewer2.org/"&gt;ColorBrewer&lt;/a&gt;, which is an awesome project by
+Cynthia Brewer to provide color-blind-friendly color options for cartographers.&lt;/p&gt;
+
+&lt;h2 id="stay-tuned"&gt;Stay Tuned&lt;/h2&gt;
+
+&lt;p&gt;And so we have the basic building blocks for our migration mapper. In the next
+couple of weeks, we're going to introduce you to the application, and we'll talk
+some more about how Clojure, ClojureScript and Datomic are powerful tools
+for building interactive applications.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
     <title>Unexamined Privilege</title>
     <link rel="alternate" href="/blog/2013/09/04/unexamined-privilege.html"/>
     <id>/blog/2013/09/04/unexamined-privilege.html</id>
@@ -287,24 +659,6 @@ user input that your app can react to.&lt;/p&gt;
 &lt;h5 id="hold-me-accountable"&gt;Hold me accountable&lt;/h5&gt;
 
 &lt;p&gt;This post is not only an attempt to help people see their privilege, but also a call to marginalized people to hold me and my peers accountable. Call me out! If there's anything in here that's offensive, I'd love to hear about it. This blog is open sourced, so pull requests are welcome. I can be reached privately via DM or email. In the interest of maintaining a safe environment, I will be moderating comments. Looking forward to your feedback.&lt;/p&gt;
-</content>
-  </entry>
-  <entry>
-    <title>Minimum Viable Blog</title>
-    <link rel="alternate" href="/blog/2013/08/29/first-post.html"/>
-    <id>/blog/2013/08/29/first-post.html</id>
-    <published>2013-08-29T07:00:00Z</published>
-    <updated>2013-08-29T07:00:00Z</updated>
-    <author>
-      <name>Article Author</name>
-    </author>
-    <summary type="html">&lt;h4 id="hello-world"&gt;Hello World.&lt;/h4&gt;
-
-&lt;p&gt;I have decided to start writing again. Life over the past year or two has taken some wild turns, and I'm starting to feel like some of my wild musings need a home again. In the spirit of Lean, here's the first iteration of my latest attempt at blogging.&lt;/p&gt;
-</summary>
-    <content type="html">&lt;h4 id="hello-world"&gt;Hello World.&lt;/h4&gt;
-
-&lt;p&gt;I have decided to start writing again. Life over the past year or two has taken some wild turns, and I'm starting to feel like some of my wild musings need a home again. In the spirit of Lean, here's the first iteration of my latest attempt at blogging.&lt;/p&gt;
 </content>
   </entry>
 </feed>
